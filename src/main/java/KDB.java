@@ -1,9 +1,9 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class KDB {
     public static void main(String[] args) {
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
 
         String banner =
                 "mm   mm   mmmmmm    mmmmmmm\n"
@@ -34,20 +34,27 @@ public class KDB {
                 } else if (command.equals("list")) {
                     System.out.println("Here are the tasks in your list:");
 
-                    for (int i = 0; i < taskCount; i++) {
-                        System.out.println((i + 1) + "." + tasks[i]);
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.println((i + 1) + "." + tasks.get(i));
                     }
                 } else if (command.equals("mark") || command.startsWith("mark ")) {
-                    int index = parseTaskIndex(command, "mark", taskCount);
-                    tasks[index].markAsDone();
+                    int index = parseTaskIndex(command, "mark", tasks.size());
+                    tasks.get(index).markAsDone();
                     System.out.println("Nice! I've marked this task as done:");
-                    System.out.println("  " + tasks[index]);
+                    System.out.println("  " + tasks.get(index));
 
                 } else if (command.equals("unmark") || command.startsWith("unmark ")) {
-                    int index = parseTaskIndex(command, "unmark", taskCount);
-                    tasks[index].markAsNotDone();
+                    int index = parseTaskIndex(command, "unmark", tasks.size());
+                    tasks.get(index).markAsNotDone();
                     System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println("  " + tasks[index]);
+                    System.out.println("  " + tasks.get(index));
+
+                } else if (command.equals("delete") || command.startsWith("delete ")) {
+                    int index = parseTaskIndex(command, "delete", tasks.size());
+                    Task removed = tasks.remove(index);
+                    System.out.println("Noted. I've removed this task:");
+                    System.out.println("  " + removed);
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
 
                 } else if (command.equals("todo") || command.startsWith("todo ")) {
                     String description = command.length() > 4 ? command.substring(5).trim() : "";
@@ -55,12 +62,11 @@ public class KDB {
                         throw new KDBException("The description of a todo cannot be empty.");
                     }
 
-                    tasks[taskCount] = new Todo(description);
-                    taskCount++;
+                    tasks.add(new Todo(description));
 
                     System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks[taskCount - 1]);
-                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("  " + tasks.get(tasks.size() - 1));
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
 
                 } else if (command.equals("deadline") || command.startsWith("deadline ")) {
                     String details = command.length() > 8 ? command.substring(9).trim() : "";
@@ -73,12 +79,11 @@ public class KDB {
                         throw new KDBException("A deadline needs both a description and a /by time, e.g. deadline return book /by Sunday.");
                     }
 
-                    tasks[taskCount] = new Deadline(parts[0].trim(), parts[1].trim());
-                    taskCount++;
+                    tasks.add(new Deadline(parts[0].trim(), parts[1].trim()));
 
                     System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks[taskCount - 1]);
-                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("  " + tasks.get(tasks.size() - 1));
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
 
                 } else if (command.equals("event") || command.startsWith("event ")) {
                     String details = command.length() > 5 ? command.substring(6).trim() : "";
@@ -96,23 +101,23 @@ public class KDB {
                         throw new KDBException("An event needs a /to time, e.g. event meeting /from Mon 2pm /to 4pm.");
                     }
 
-                    tasks[taskCount] = new Event(fromParts[0].trim(), toParts[0].trim(), toParts[1].trim());
-                    taskCount++;
+                    tasks.add(new Event(fromParts[0].trim(), toParts[0].trim(), toParts[1].trim()));
 
                     System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks[taskCount - 1]);
-                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("  " + tasks.get(tasks.size() - 1));
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
 
                 } else {
                     throw new KDBException(
                             "I'm not sure what that means. Here's what I can do:\n"
-                        + "  - todo <description>\n"
-                        + "  - deadline <description> /by <time>\n"
-                        + "  - event <description> /from <start> /to <end>\n"
-                        + "  - list\n"
-                        + "  - mark <task number>\n"
-                        + "  - unmark <task number>\n"
-                        + "  bye");
+                          + "  todo <description>\n"
+                          + "  deadline <description> /by <time>\n"
+                          + "  event <description> /from <start> /to <end>\n"
+                          + "  list\n"
+                          + "  mark <task number>\n"
+                          + "  unmark <task number>\n"
+                          + "  delete <task number>\n"
+                          + "  bye");
                 }
             } catch (KDBException e) {
                 System.out.println(e.getMessage());
@@ -122,6 +127,15 @@ public class KDB {
         }
     }
 
+    /**
+     * Parses and validates the task index for mark/unmark/delete commands.
+     *
+     * @param command    the full user input
+     * @param commandWord "mark", "unmark", or "delete"
+     * @param taskCount  current number of tasks, used for bounds checking
+     * @return zero-based task index
+     * @throws KDBException if the index is missing, not a number, or out of range
+     */
     private static int parseTaskIndex(String command, String commandWord, int taskCount) throws KDBException {
         String[] parts = command.split(" ");
         if (parts.length < 2 || parts[1].trim().isEmpty()) {
