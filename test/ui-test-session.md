@@ -1,27 +1,19 @@
-# UI Test Plan
+# UI Test Session
 
-## Test command
+**Test command:** `cd src/main/java && javac *.java && java KDB`
 
-```sh
-cd src/main/java && javac *.java && java KDB
-```
-
-## Test cases
-
-Add one third-level section for each UI test. Every test case must include an
-aim, its complete console input, and the complete expected console output.
-
-### Example: exits on bye
+## 1. Example: exits on bye
 
 **Aim:** Confirm that the chatbot accepts the exit command and prints its farewell.
 
-**Input:**
+### Console input
 
 ```text
 bye
 ```
 
-**Expected output:**
+### Console output
+
 
 ```text
 ____________________________________________________________
@@ -38,3 +30,5 @@ ____________________________________________________________
 Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
+
+**Result:** PASS
