@@ -4,6 +4,9 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class KDB {
     public static void main(String[] args) {
@@ -93,12 +96,29 @@ public class KDB {
                         if (arguments.isEmpty()) {
                             throw new KDBException("The description of a deadline cannot be empty.");
                         }
+
                         String[] parts = arguments.split(" /by ", 2);
-                        if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
-                            throw new KDBException("A deadline needs both a description and a /by time, e.g. deadline return book /by Sunday.");
+
+                        if (parts.length < 2
+                                || parts[0].trim().isEmpty()
+                                || parts[1].trim().isEmpty()) {
+                            throw new KDBException(
+                                    "A deadline needs a description and date/time, "
+                                    + "e.g. deadline return book /by 2/12/2019 1800.");
                         }
-                        tasks.add(new Deadline(parts[0].trim(), parts[1].trim()));
+
+                        String description = parts[0].trim();
+                        LocalDateTime deadlineDateTime = parseDate(parts[1].trim());
+
+                        if (deadlineDateTime == null) {
+                            throw new KDBException(
+                                    "Invalid date/time. Please use d/M/yyyy HHmm, "
+                                    + "e.g. 2/12/2019 1800.");
+                        }
+
+                        tasks.add(new Deadline(description, deadlineDateTime));
                         saveTasksSafely(tasks);
+
                         System.out.println("Got it. I've added this task:");
                         System.out.println("  " + tasks.get(tasks.size() - 1));
                         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
@@ -194,6 +214,17 @@ public class KDB {
             saveTasks(tasks);
         } catch (IOException e) {
             System.out.println("An error occurred while saving tasks: " + e.getMessage());
+        }
+    }
+
+    private static LocalDateTime parseDate(String dateStr) {
+        try {
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("d/M/uuuu HHmm");
+
+            return LocalDateTime.parse(dateStr.trim(), formatter);
+        } catch (DateTimeParseException e) {
+            return null;
         }
     }
 }
