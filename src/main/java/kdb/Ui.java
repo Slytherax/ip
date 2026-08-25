@@ -54,6 +54,14 @@ public class Ui implements AutoCloseable {
         }
     }
 
+    /** Displays tasks matching a search keyword. */
+    public void showMatchingTasks(TaskList tasks) {
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + "." + tasks.get(i));
+        }
+    }
+
     /** Displays confirmation after adding a task. */
     public void showAdded(Task task, int taskCount) {
         System.out.println("Got it. I've added this task:");
@@ -96,6 +104,7 @@ public class Ui implements AutoCloseable {
               + "  mark <task number>\n"
               + "  unmark <task number>\n"
               + "  delete <task number>\n"
+              + "  find <keyword>\n"
               + "  bye");
     }
 

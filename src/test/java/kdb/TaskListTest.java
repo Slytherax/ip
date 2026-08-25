@@ -45,4 +45,26 @@ class TaskListTest {
 
         assertEquals("first,second,", descriptions.toString());
     }
+
+    @Test
+    void find_keywordIsCaseInsensitive_returnsMatchingTasksInOrder() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("Read a book"));
+        tasks.add(new Deadline("submit report", java.time.LocalDateTime.of(2025, 1, 1, 9, 0)));
+        tasks.add(new Todo("Return book"));
+
+        TaskList matchingTasks = tasks.find("BOOK");
+
+        assertEquals(2, matchingTasks.size());
+        assertEquals("Read a book", matchingTasks.get(0).getDescription());
+        assertEquals("Return book", matchingTasks.get(1).getDescription());
+    }
+
+    @Test
+    void findNoMatch_returnsEmptyTaskList() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("Read a book"));
+
+        assertEquals(0, tasks.find("meeting").size());
+    }
 }
