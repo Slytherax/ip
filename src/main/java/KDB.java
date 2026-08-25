@@ -224,7 +224,6 @@ public class KDB {
 
             return LocalDateTime.parse(dateStr.trim(), formatter);
         } catch (DateTimeParseException e) {
-            System.out.println("Invalid date format. Please use d/M/yyyy HHmm.");
             return null;
         }
     }
