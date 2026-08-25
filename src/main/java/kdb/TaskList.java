@@ -48,6 +48,25 @@ public class TaskList implements Iterable<Task> {
         return tasks.size();
     }
 
+    /**
+     * Returns tasks whose descriptions contain the given keyword.
+     * Matching is case-insensitive.
+     *
+     * @param keyword text to search for in task descriptions
+     * @return matching tasks in their original order
+     */
+    public TaskList find(String keyword) {
+        TaskList matchingTasks = new TaskList();
+        String normalizedKeyword = keyword.toLowerCase();
+
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(normalizedKeyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        return matchingTasks;
+    }
+
     /** Returns an iterator over the stored tasks. */
     @Override
     public Iterator<Task> iterator() {

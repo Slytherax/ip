@@ -44,6 +44,13 @@ public class KDB {
                         ui.showTaskList(tasks);
                         break;
 
+                    case FIND:
+                        if (arguments.isEmpty()) {
+                            throw new KDBException("Please provide a keyword to find.");
+                        }
+                        ui.showMatchingTasks(tasks.find(arguments));
+                        break;
+
                     case MARK: {
                         int index = parseTaskIndex(arguments, "mark", tasks.size());
                         tasks.get(index).markAsDone();
