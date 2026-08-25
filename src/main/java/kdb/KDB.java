@@ -1,8 +1,11 @@
+package kdb;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/** Coordinates the chatbot's user interaction, commands, tasks, and storage. */
 public class KDB {
     public static void main(String[] args) {
         Storage storage = new Storage("data/tasks.txt");
@@ -12,7 +15,7 @@ public class KDB {
         try {
             tasks = storage.load();
         } catch (IOException e) {
-            System.out.println("An error occurred while loading tasks: " + e.getMessage());
+            ui.showError("An error occurred while loading tasks: " + e.getMessage());
             tasks = new TaskList();
         }
 
@@ -110,11 +113,15 @@ public class KDB {
                         }
                         String[] fromParts = arguments.split(" /from ", 2);
                         if (fromParts.length < 2 || fromParts[0].trim().isEmpty()) {
-                            throw new KDBException("An event needs a /from time, e.g. event meeting /from Mon 2pm /to 4pm.");
+                            throw new KDBException(
+                                    "An event needs a /from time, "
+                                    + "e.g. event meeting /from Mon 2pm /to 4pm.");
                         }
                         String[] toParts = fromParts[1].split(" /to ", 2);
                         if (toParts.length < 2 || toParts[0].trim().isEmpty() || toParts[1].trim().isEmpty()) {
-                            throw new KDBException("An event needs a /to time, e.g. event meeting /from Mon 2pm /to 4pm.");
+                            throw new KDBException(
+                                    "An event needs a /to time, "
+                                    + "e.g. event meeting /from Mon 2pm /to 4pm.");
                         }
                         tasks.add(new Event(fromParts[0].trim(), toParts[0].trim(), toParts[1].trim()));
                         saveTasksSafely(storage, tasks);
@@ -147,18 +154,23 @@ public class KDB {
      */
     private static int parseTaskIndex(String arguments, String commandWord, int taskCount) throws KDBException {
         if (arguments.isEmpty()) {
-            throw new KDBException("Please tell me which task number to " + commandWord + ", e.g. " + commandWord + " 2.");
+            throw new KDBException(
+                    "Please tell me which task number to " + commandWord
+                    + ", e.g. " + commandWord + " 2.");
         }
 
         int index;
         try {
             index = Integer.parseInt(arguments.trim()) - 1;
         } catch (NumberFormatException e) {
-            throw new KDBException("Task number needs to be a whole number, e.g. " + commandWord + " 2.");
+            throw new KDBException(
+                    "Task number needs to be a whole number, e.g. " + commandWord + " 2.");
         }
 
         if (index < 0 || index >= taskCount) {
-            throw new KDBException("That task number doesn't exist. You currently have " + taskCount + " task(s).");
+            throw new KDBException(
+                    "That task number doesn't exist. You currently have "
+                    + taskCount + " task(s).");
         }
 
         return index;

@@ -1,3 +1,5 @@
+package kdb;
+
 import java.util.Scanner;
 
 /**

@@ -1,3 +1,5 @@
+package kdb;
+
 /**
  * Converts raw user input into a command and its arguments.
  */
@@ -12,10 +14,12 @@ public class Parser {
             this.arguments = arguments;
         }
 
+        /** Returns the parsed command type. */
         public CommandType getCommand() {
             return command;
         }
 
+        /** Returns the text following the command word. */
         public String getArguments() {
             return arguments;
         }

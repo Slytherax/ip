@@ -3,7 +3,7 @@
 ## Test command
 
 ```sh
-rm -f data/tasks.txt && javac src/main/java/*.java && java -cp src/main/java KDB
+rm -f data/tasks.txt && rm -rf out && javac -d out src/main/java/kdb/*.java && java -cp out kdb.KDB
 ```
 
 ## Test cases
