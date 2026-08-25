@@ -53,6 +53,7 @@ public class Task {
         isDone = false;
     }
 
+    /** Returns a human-readable representation of this task. */
     @Override
     public String toString() {
         return "[" + getStatusIcon() + "] " + description;

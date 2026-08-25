@@ -99,6 +99,7 @@ public class Ui implements AutoCloseable {
               + "  bye");
     }
 
+    /** Closes the console input scanner. */
     @Override
     public void close() {
         scanner.close();
