@@ -19,21 +19,36 @@ public class TaskList implements Iterable<Task> {
         tasks.add(task);
     }
 
-    /** Returns the task at a zero-based index. */
+    /**
+     * Returns the task at a zero-based index.
+     *
+     * @param index zero-based position of the task
+     * @return task at the requested position
+     */
     public Task get(int index) {
         return tasks.get(index);
     }
 
-    /** Removes and returns the task at a zero-based index. */
+    /**
+     * Removes and returns the task at a zero-based index.
+     *
+     * @param index zero-based position of the task
+     * @return the removed task
+     */
     public Task remove(int index) {
         return tasks.remove(index);
     }
 
-    /** Returns the number of tasks currently stored. */
+    /**
+     * Returns the number of tasks currently stored.
+     *
+     * @return number of tasks
+     */
     public int size() {
         return tasks.size();
     }
 
+    /** Returns an iterator over the stored tasks. */
     @Override
     public Iterator<Task> iterator() {
         return tasks.iterator();
