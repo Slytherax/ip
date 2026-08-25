@@ -1,3 +1,6 @@
+package kdb;
+
+/** Represents a task that takes place during a stated period. */
 public class Event extends Task {
     protected String from;
     protected String to;
@@ -8,6 +11,7 @@ public class Event extends Task {
         this.to = to;
     }
 
+    @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
     }
@@ -17,5 +21,4 @@ public class Event extends Task {
         return "E | " + (isDone() ? "1" : "0") + " | " + getDescription()
                 + " | " + from + " | " + to;
     }
-    
 }
