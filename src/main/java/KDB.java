@@ -6,8 +6,14 @@ import java.time.format.DateTimeParseException;
 
 public class KDB {
     public static void main(String[] args) {
-        TaskList tasks = new TaskList();
         Storage storage = new Storage("data/tasks.txt");
+        TaskList tasks;
+        try {
+            tasks = storage.load();
+        } catch (IOException e) {
+            System.out.println("An error occurred while loading tasks: " + e.getMessage());
+            tasks = new TaskList();
+        }
 
         String banner =
                 "mm   mm   mmmmmm    mmmmmmm\n"

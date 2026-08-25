@@ -1,6 +1,6 @@
 # UI Test Session
 
-**Test command:** `javac src/main/java/*.java && java -cp src/main/java KDB`
+**Test command:** `rm -f data/tasks.txt && javac src/main/java/*.java && java -cp src/main/java KDB`
 
 ## 1. Example: exits on bye
 

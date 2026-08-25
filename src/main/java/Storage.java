@@ -1,7 +1,12 @@
 import java.io.BufferedWriter;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Handles saving the task list to the hard drive.
@@ -37,5 +42,71 @@ public class Storage {
                 writer.newLine();
             }
         }
+    }
+
+    /**
+     * Loads tasks from the task file. A missing file represents an empty list.
+     *
+     * @return tasks reconstructed from the file
+     * @throws IOException if the file cannot be read or contains invalid data
+     */
+    public TaskList load() throws IOException {
+        TaskList tasks = new TaskList();
+        File file = new File(filePath);
+        if (!file.exists()) {
+            return tasks;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!line.trim().isEmpty()) {
+                    tasks.add(parseTask(line));
+                }
+            }
+        }
+        return tasks;
+    }
+
+    private Task parseTask(String line) throws IOException {
+        String[] parts = line.split("\\s*\\|\\s*");
+        if (parts.length < 3) {
+            throw new IOException("invalid task format: " + line);
+        }
+
+        String type = parts[0];
+        boolean isDone = parts[1].equals("1");
+        Task task;
+
+        try {
+            switch (type) {
+            case "T":
+                task = new Todo(parts[2]);
+                break;
+            case "D":
+                if (parts.length < 4) {
+                    throw new IOException("invalid deadline format: " + line);
+                }
+                LocalDateTime deadline = LocalDateTime.parse(
+                        parts[3], DateTimeFormatter.ofPattern("d/M/uuuu HHmm"));
+                task = new Deadline(parts[2], deadline);
+                break;
+            case "E":
+                if (parts.length < 5) {
+                    throw new IOException("invalid event format: " + line);
+                }
+                task = new Event(parts[2], parts[3], parts[4]);
+                break;
+            default:
+                throw new IOException("unknown task type: " + type);
+            }
+        } catch (DateTimeParseException e) {
+            throw new IOException("invalid deadline date: " + line, e);
+        }
+
+        if (isDone) {
+            task.markAsDone();
+        }
+        return task;
     }
 }
