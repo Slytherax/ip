@@ -78,3 +78,40 @@ ____________________________________________________________
 Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
+
+## Executable JAR test
+
+**Aim:** Confirm that the packaged application can run from an otherwise empty
+folder and can save task data beside the JAR file.
+
+**Preparation:**
+
+From the project root, build the JAR:
+
+```text
+./gradlew clean shadowJar
+```
+
+Create an empty test folder, copy `build/libs/duke.jar` into it, and open a
+terminal in that folder.
+
+**Input:**
+
+```text
+todo packaged task
+list
+bye
+```
+
+**Command:**
+
+```text
+java -jar "duke.jar"
+```
+
+**Expected result:**
+
+```text
+The chatbot starts successfully, accepts all three commands, displays
+"packaged task" in the task list, and creates data/tasks.txt beside the JAR.
+```
