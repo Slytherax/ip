@@ -70,6 +70,13 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Reconstructs one task from its pipe-separated file representation.
+     *
+     * @param line one line from the task file
+     * @return the reconstructed task
+     * @throws IOException if the line has an unsupported or invalid format
+     */
     private Task parseTask(String line) throws IOException {
         String[] parts = line.split("\\s*\\|\\s*");
         if (parts.length < 3) {

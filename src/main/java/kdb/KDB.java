@@ -7,6 +7,7 @@ import java.time.format.DateTimeParseException;
 
 /** Coordinates the chatbot's user interaction, commands, tasks, and storage. */
 public class KDB {
+    /** Starts KDB and runs its command loop. */
     public static void main(String[] args) {
         Storage storage = new Storage("data/tasks.txt");
         Parser parser = new Parser();
