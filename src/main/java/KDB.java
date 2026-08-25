@@ -1,8 +1,5 @@
 import java.util.Scanner;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -10,6 +7,7 @@ import java.time.format.DateTimeParseException;
 public class KDB {
     public static void main(String[] args) {
         TaskList tasks = new TaskList();
+        Storage storage = new Storage("data/tasks.txt");
 
         String banner =
                 "mm   mm   mmmmmm    mmmmmmm\n"
@@ -55,7 +53,7 @@ public class KDB {
                     case MARK: {
                         int index = parseTaskIndex(arguments, "mark", tasks.size());
                         tasks.get(index).markAsDone();
-                        saveTasksSafely(tasks);
+                        saveTasksSafely(storage, tasks);
                         System.out.println("Nice! I've marked this task as done:");
                         System.out.println("  " + tasks.get(index));
                         break;
@@ -64,7 +62,7 @@ public class KDB {
                     case UNMARK: {
                         int index = parseTaskIndex(arguments, "unmark", tasks.size());
                         tasks.get(index).markAsNotDone();
-                        saveTasksSafely(tasks);
+                        saveTasksSafely(storage, tasks);
                         System.out.println("OK, I've marked this task as not done yet:");
                         System.out.println("  " + tasks.get(index));
                         break;
@@ -73,7 +71,7 @@ public class KDB {
                     case DELETE: {
                         int index = parseTaskIndex(arguments, "delete", tasks.size());
                         Task removed = tasks.remove(index);
-                        saveTasksSafely(tasks);
+                        saveTasksSafely(storage, tasks);
                             System.out.println("Noted. I've removed this task:");
                         System.out.println("  " + removed);
                         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
@@ -85,7 +83,7 @@ public class KDB {
                             throw new KDBException("The description of a todo cannot be empty.");
                         }
                         tasks.add(new Todo(arguments));
-                        saveTasksSafely(tasks);
+                        saveTasksSafely(storage, tasks);
                         System.out.println("Got it. I've added this task:");
                         System.out.println("  " + tasks.get(tasks.size() - 1));
                         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
@@ -116,7 +114,7 @@ public class KDB {
                         }
 
                         tasks.add(new Deadline(description, deadlineDateTime));
-                        saveTasksSafely(tasks);
+                        saveTasksSafely(storage, tasks);
 
                         System.out.println("Got it. I've added this task:");
                         System.out.println("  " + tasks.get(tasks.size() - 1));
@@ -137,7 +135,7 @@ public class KDB {
                             throw new KDBException("An event needs a /to time, e.g. event meeting /from Mon 2pm /to 4pm.");
                         }
                         tasks.add(new Event(fromParts[0].trim(), toParts[0].trim(), toParts[1].trim()));
-                        saveTasksSafely(tasks);
+                        saveTasksSafely(storage, tasks);
                         System.out.println("Got it. I've added this task:");
                         System.out.println("  " + tasks.get(tasks.size() - 1));
                         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
@@ -194,23 +192,9 @@ public class KDB {
         return index;
     }
 
-    private static void saveTasks(TaskList tasks) throws IOException {
-        File dataDirectory = new File("data");
-        if (!dataDirectory.exists() && !dataDirectory.mkdirs()) {
-            throw new IOException("could not create data directory");
-        }
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/tasks.txt"))) {
-            for (Task task : tasks) {
-                writer.write(task.toFileFormat());
-                writer.newLine();
-            }
-        }
-    }
-
-    private static void saveTasksSafely(TaskList tasks) {
+    private static void saveTasksSafely(Storage storage, TaskList tasks) {
         try {
-            saveTasks(tasks);
+            storage.save(tasks);
         } catch (IOException e) {
             System.out.println("An error occurred while saving tasks: " + e.getMessage());
         }
