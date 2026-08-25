@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -10,7 +9,7 @@ import java.time.format.DateTimeParseException;
 
 public class KDB {
     public static void main(String[] args) {
-        ArrayList<Task> tasks = new ArrayList<>();
+        TaskList tasks = new TaskList();
 
         String banner =
                 "mm   mm   mmmmmm    mmmmmmm\n"
@@ -195,7 +194,7 @@ public class KDB {
         return index;
     }
 
-    private static void saveTasks(ArrayList<Task> tasks) throws IOException {
+    private static void saveTasks(TaskList tasks) throws IOException {
         File dataDirectory = new File("data");
         if (!dataDirectory.exists() && !dataDirectory.mkdirs()) {
             throw new IOException("could not create data directory");
@@ -209,7 +208,7 @@ public class KDB {
         }
     }
 
-    private static void saveTasksSafely(ArrayList<Task> tasks) {
+    private static void saveTasksSafely(TaskList tasks) {
         try {
             saveTasks(tasks);
         } catch (IOException e) {
