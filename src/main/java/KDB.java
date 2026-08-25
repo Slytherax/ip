@@ -7,6 +7,7 @@ import java.time.format.DateTimeParseException;
 public class KDB {
     public static void main(String[] args) {
         Storage storage = new Storage("data/tasks.txt");
+        Parser parser = new Parser();
         TaskList tasks;
         try {
             tasks = storage.load();
@@ -34,11 +35,9 @@ public class KDB {
 
             while (!isExit) {
                 String input = scanner.nextLine();
-                String[] split = input.split(" ", 2);
-                String commandWord = split[0];
-                String arguments = split.length > 1 ? split[1].trim() : "";
-
-                CommandType command = CommandType.fromWord(commandWord);
+                Parser.ParsedCommand parsedCommand = parser.parse(input);
+                CommandType command = parsedCommand.getCommand();
+                String arguments = parsedCommand.getArguments();
 
                 System.out.println("____________________________________________________________");
 
