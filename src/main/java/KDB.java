@@ -1,4 +1,3 @@
-import java.util.Scanner;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -8,6 +7,7 @@ public class KDB {
     public static void main(String[] args) {
         Storage storage = new Storage("data/tasks.txt");
         Parser parser = new Parser();
+        Ui ui = new Ui();
         TaskList tasks;
         try {
             tasks = storage.load();
@@ -16,51 +16,35 @@ public class KDB {
             tasks = new TaskList();
         }
 
-        String banner =
-                "mm   mm   mmmmmm    mmmmmmm\n"
-              + "##  ##    ##    ##  ##    ##\n"
-              + "##m##     ##    ##  ##    ##\n"
-              + "#####     ##    ##  #######\n"
-              + "##  ##m   ##    ##  ##    ##\n"
-              + "##   ##m  ##mmm##   ##mmmm##";
+        ui.showWelcome();
 
-        System.out.println("____________________________________________________________");
-        System.out.println(banner);
-        System.out.println("Hello! I'm KDB.");
-        System.out.println("What can I do for you?");
-        System.out.println("____________________________________________________________");
-
-        try (Scanner scanner = new Scanner(System.in)) {
+        try (ui) {
             boolean isExit = false;
 
             while (!isExit) {
-                String input = scanner.nextLine();
+                String input = ui.readCommand();
                 Parser.ParsedCommand parsedCommand = parser.parse(input);
                 CommandType command = parsedCommand.getCommand();
                 String arguments = parsedCommand.getArguments();
 
-                System.out.println("____________________________________________________________");
+                ui.showDivider();
 
                 try {
                     switch (command) {
                     case BYE:
-                        System.out.println("Bye. Hope to see you again soon!");
+                        ui.showBye();
                         isExit = true;
                         break;
 
                     case LIST:
-                        System.out.println("Here are the tasks in your list:");
-                        for (int i = 0; i < tasks.size(); i++) {
-                            System.out.println((i + 1) + "." + tasks.get(i));
-                        }
+                        ui.showTaskList(tasks);
                         break;
 
                     case MARK: {
                         int index = parseTaskIndex(arguments, "mark", tasks.size());
                         tasks.get(index).markAsDone();
                         saveTasksSafely(storage, tasks);
-                        System.out.println("Nice! I've marked this task as done:");
-                        System.out.println("  " + tasks.get(index));
+                        ui.showMarked(tasks.get(index));
                         break;
                     }
 
@@ -68,8 +52,7 @@ public class KDB {
                         int index = parseTaskIndex(arguments, "unmark", tasks.size());
                         tasks.get(index).markAsNotDone();
                         saveTasksSafely(storage, tasks);
-                        System.out.println("OK, I've marked this task as not done yet:");
-                        System.out.println("  " + tasks.get(index));
+                        ui.showUnmarked(tasks.get(index));
                         break;
                     }
 
@@ -77,9 +60,7 @@ public class KDB {
                         int index = parseTaskIndex(arguments, "delete", tasks.size());
                         Task removed = tasks.remove(index);
                         saveTasksSafely(storage, tasks);
-                            System.out.println("Noted. I've removed this task:");
-                        System.out.println("  " + removed);
-                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        ui.showDeleted(removed, tasks.size());
                         break;
                     }
 
@@ -89,9 +70,7 @@ public class KDB {
                         }
                         tasks.add(new Todo(arguments));
                         saveTasksSafely(storage, tasks);
-                        System.out.println("Got it. I've added this task:");
-                        System.out.println("  " + tasks.get(tasks.size() - 1));
-                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        ui.showAdded(tasks.get(tasks.size() - 1), tasks.size());
                         break;
 
                     case DEADLINE: {
@@ -121,9 +100,7 @@ public class KDB {
                         tasks.add(new Deadline(description, deadlineDateTime));
                         saveTasksSafely(storage, tasks);
 
-                        System.out.println("Got it. I've added this task:");
-                        System.out.println("  " + tasks.get(tasks.size() - 1));
-                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        ui.showAdded(tasks.get(tasks.size() - 1), tasks.size());
                         break;
                     }
 
@@ -141,30 +118,20 @@ public class KDB {
                         }
                         tasks.add(new Event(fromParts[0].trim(), toParts[0].trim(), toParts[1].trim()));
                         saveTasksSafely(storage, tasks);
-                        System.out.println("Got it. I've added this task:");
-                        System.out.println("  " + tasks.get(tasks.size() - 1));
-                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        ui.showAdded(tasks.get(tasks.size() - 1), tasks.size());
                         break;
                     }
 
                     case UNKNOWN:
                     default:
-                        throw new KDBException(
-                                "I'm not sure what that means. Here's what I can do:\n"
-                              + "  todo <description>\n"
-                              + "  deadline <description> /by <time>\n"
-                              + "  event <description> /from <start> /to <end>\n"
-                              + "  list\n"
-                              + "  mark <task number>\n"
-                              + "  unmark <task number>\n"
-                              + "  delete <task number>\n"
-                              + "  bye");
+                        ui.showUnknownCommandHelp();
+                        break;
                     }
                 } catch (KDBException e) {
-                    System.out.println(e.getMessage());
+                    ui.showError(e.getMessage());
                 }
 
-                System.out.println("____________________________________________________________");
+                ui.showDivider();
             }
         }
     }
