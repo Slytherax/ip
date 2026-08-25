@@ -22,7 +22,7 @@ public class Ui implements AutoCloseable {
               + "##m##     ##    ##  ##    ##\n"
               + "#####     ##    ##  #######\n"
               + "##  ##m   ##    ##  ##    ##\n"
-              + "##   ##m  ##mmm##   ##mmmm##\n";
+              + "##   ##m  ##mmm##   ##mmmm##";
 
         showDivider();
         System.out.println(banner);
