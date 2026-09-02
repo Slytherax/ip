@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'com.gradleup.shadow' version '9.5.1'
+    id 'checkstyle'
 }
 
 java {
@@ -37,7 +38,7 @@ test {
 }
 
 application {
-    mainClass = 'kdb.KDB'
+    mainClass = 'kdb.Kdb'
 }
 
 jar {
@@ -53,4 +54,8 @@ shadowJar {
 
 run {
     standardInput = System.in
+}
+
+checkstyle {
+    toolVersion = '11.0.0'
 }

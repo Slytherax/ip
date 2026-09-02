@@ -89,25 +89,25 @@ public class Storage {
 
         try {
             switch (type) {
-            case "T":
-                task = new Todo(parts[2]);
-                break;
-            case "D":
-                if (parts.length < 4) {
-                    throw new IOException("invalid deadline format: " + line);
-                }
-                LocalDateTime deadline = LocalDateTime.parse(
-                        parts[3], DateTimeFormatter.ofPattern("d/M/uuuu HHmm"));
-                task = new Deadline(parts[2], deadline);
-                break;
-            case "E":
-                if (parts.length < 5) {
-                    throw new IOException("invalid event format: " + line);
-                }
-                task = new Event(parts[2], parts[3], parts[4]);
-                break;
-            default:
-                throw new IOException("unknown task type: " + type);
+                case "T":
+                    task = new Todo(parts[2]);
+                    break;
+                case "D":
+                    if (parts.length < 4) {
+                        throw new IOException("invalid deadline format: " + line);
+                    }
+                    LocalDateTime deadline = LocalDateTime.parse(
+                            parts[3], DateTimeFormatter.ofPattern("d/M/uuuu HHmm"));
+                    task = new Deadline(parts[2], deadline);
+                    break;
+                case "E":
+                    if (parts.length < 5) {
+                        throw new IOException("invalid event format: " + line);
+                    }
+                    task = new Event(parts[2], parts[3], parts[4]);
+                    break;
+                default:
+                    throw new IOException("unknown task type: " + type);
             }
         } catch (DateTimeParseException e) {
             throw new IOException("invalid deadline date: " + line, e);

@@ -18,7 +18,7 @@ the program and Markdown test cases in this form:
 ## Test command
 
 ```sh
-cd src/main/java && javac *.java && java KDB
+cd src/main/java && javac *.java && java Kdb
 ```
 
 ## Test cases
