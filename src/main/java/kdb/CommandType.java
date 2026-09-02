@@ -1,13 +1,9 @@
 package kdb;
 
-/** Represents the commands understood by KDB. */
+/** Represents the commands understood by Kdb. */
 public enum CommandType {
     BYE, LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, FIND, UNKNOWN;
 
-    /**
-     * Maps a raw command word to a CommandType, defaulting to UNKNOWN
-     * for anything not recognised.
-     */
     /**
      * Maps a raw command word to a command type.
      *

@@ -26,7 +26,7 @@ public class Ui implements AutoCloseable {
 
         showDivider();
         System.out.println(banner);
-        System.out.println("Hello! I'm KDB.");
+        System.out.println("Hello! I'm Kdb.");
         System.out.println("What can I do for you?");
         showDivider();
     }

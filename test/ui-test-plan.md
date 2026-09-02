@@ -3,7 +3,7 @@
 ## Test command
 
 ```sh
-rm -f data/tasks.txt && rm -rf out && javac -d out src/main/java/kdb/*.java && java -cp out kdb.KDB
+rm -f data/tasks.txt && rm -rf out && javac -d out src/main/java/kdb/*.java && java -cp out kdb.Kdb
 ```
 
 ## Test cases
@@ -31,7 +31,7 @@ mm   mm   mmmmmm    mmmmmmm
 #####     ##    ##  #######
 ##  ##m   ##    ##  ##    ##
 ##   ##m  ##mmm##   ##mmmm##
-Hello! I'm KDB.
+Hello! I'm Kdb.
 What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
@@ -61,7 +61,7 @@ mm   mm   mmmmmm    mmmmmmm
 #####     ##    ##  #######
 ##  ##m   ##    ##  ##    ##
 ##   ##m  ##mmm##   ##mmmm##
-Hello! I'm KDB.
+Hello! I'm Kdb.
 What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
@@ -139,7 +139,7 @@ mm   mm   mmmmmm    mmmmmmm
 #####     ##    ##  #######
 ##  ##m   ##    ##  ##    ##
 ##   ##m  ##mmm##   ##mmmm##
-Hello! I'm KDB.
+Hello! I'm Kdb.
 What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
@@ -183,7 +183,7 @@ mm   mm   mmmmmm    mmmmmmm
 #####     ##    ##  #######
 ##  ##m   ##    ##  ##    ##
 ##   ##m  ##mmm##   ##mmmm##
-Hello! I'm KDB.
+Hello! I'm Kdb.
 What can I do for you?
 ____________________________________________________________
 ____________________________________________________________

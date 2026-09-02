@@ -1,4 +1,4 @@
-# KDB User Guide
+# Kdb User Guide
 
 // Update the title above to match the actual product name
 

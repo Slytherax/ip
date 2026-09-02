@@ -1,13 +1,13 @@
 package kdb;
 
 /** Represents an expected error caused by invalid chatbot input. */
-public class KDBException extends Exception {
+public class KdbException extends Exception {
     /**
      * Creates an exception with a message suitable for displaying to the user.
      *
      * @param message explanation of the invalid command or input
      */
-    public KDBException(String message) {
+    public KdbException(String message) {
         super(message);
     }
 }

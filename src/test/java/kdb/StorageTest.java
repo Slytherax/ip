@@ -56,7 +56,7 @@ class StorageTest {
     }
 
     @Test
-    void loadMalformedTask_throwsIOException() throws IOException {
+    void loadMalformedTask_throwsIoException() throws IOException {
         Path file = temporaryDirectory.resolve("invalid.txt");
         Files.writeString(file, "X | 0 | unknown task\n");
         Storage storage = new Storage(file.toString());
@@ -65,7 +65,7 @@ class StorageTest {
     }
 
     @Test
-    void loadInvalidDeadlineDate_throwsIOException() throws IOException {
+    void loadInvalidDeadlineDate_throwsIoException() throws IOException {
         Path file = temporaryDirectory.resolve("invalid-date.txt");
         Files.writeString(file, "D | 0 | return book | not-a-date\n");
         Storage storage = new Storage(file.toString());
