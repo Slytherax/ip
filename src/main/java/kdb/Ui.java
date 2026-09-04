@@ -16,6 +16,11 @@ public class Ui implements AutoCloseable {
 
     /** Displays the startup banner and greeting. */
     public void showWelcome() {
+        System.out.println(welcomeMessage());
+    }
+
+    /** Returns the startup banner and greeting for display. */
+    public static String welcomeMessage() {
         String banner =
                 "mm   mm   mmmmmm    mmmmmmm\n"
               + "##  ##    ##    ##  ##    ##\n"
@@ -24,11 +29,7 @@ public class Ui implements AutoCloseable {
               + "##  ##m   ##    ##  ##    ##\n"
               + "##   ##m  ##mmm##   ##mmmm##";
 
-        showDivider();
-        System.out.println(banner);
-        System.out.println("Hello! I'm Kdb.");
-        System.out.println("What can I do for you?");
-        showDivider();
+        return banner + "\nHello! I'm Kdb.\nWhat can I do for you?";
     }
 
     /** Reads the next command from the user. */
@@ -95,7 +96,12 @@ public class Ui implements AutoCloseable {
 
     /** Displays help for an unrecognized command. */
     public void showUnknownCommandHelp() {
-        showError(
+        showError(unknownCommandHelp());
+    }
+
+    /** Returns help text for an unrecognized command. */
+    public static String unknownCommandHelp() {
+        return
                 "I'm not sure what that means. Here's what I can do:\n"
               + "  todo <description>\n"
               + "  deadline <description> /by <time>\n"
@@ -105,7 +111,7 @@ public class Ui implements AutoCloseable {
               + "  unmark <task number>\n"
               + "  delete <task number>\n"
               + "  find <keyword>\n"
-              + "  bye");
+              + "  bye";
     }
 
     /** Closes the console input scanner. */
