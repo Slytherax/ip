@@ -30,8 +30,7 @@ public class MainWindow {
     /** Adds Kdb's initial greeting after the FXML controls are created. */
     @FXML
     private void initialize() {
-        dialogContainer.getChildren().add(
-                new DialogBox(Ui.welcomeMessage(), botImage, false));
+        addMessages(botImage, false, Ui.welcomeMessage());
         dialogContainer.heightProperty().addListener(
                 (observable, oldHeight, newHeight) -> scrollToBottom());
         userInput.requestFocus();
@@ -46,8 +45,8 @@ public class MainWindow {
         if (!input.isBlank()) {
             String response = kdb.executeCommand(input);
 
-            dialogContainer.getChildren().add(new DialogBox(input, userImage, true));
-            dialogContainer.getChildren().add(new DialogBox(response, botImage, false));
+            addMessages(userImage, true, input);
+            addMessages(botImage, false, response);
 
             userInput.clear();
             scrollToBottom();
@@ -63,6 +62,13 @@ public class MainWindow {
     /** Scrolls the conversation area to the newest message. */
     private void scrollToBottom() {
         Platform.runLater(() -> scrollPane.setVvalue(1.0));
+    }
+
+    /** Adds any number of messages with the selected speaker's styling. */
+    private void addMessages(Image image, boolean isUser, String... messages) {
+        for (String message : messages) {
+            dialogContainer.getChildren().add(new DialogBox(message, image, isUser));
+        }
     }
 
     /** Loads an avatar from the classpath, returning null when it is absent. */
