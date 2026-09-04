@@ -1,0 +1,32 @@
+.root {
+    -fx-background-color: #b1b8b9;
+}
+
+.button {
+    -fx-background-color: #024a97;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8px;
+}
+
+.button:hover {
+    -fx-background-color: #032347;
+}
+
+.text-field {
+    -fx-font-size: 14px;
+    -fx-background-radius: 8px;
+}
+
+.bot-message {
+    -fx-background-color: #bef7ff;
+    -fx-background-radius: 12px;
+    -fx-padding: 10px;
+    -fx-font-family: 'Monospaced';
+}
+
+.user-message {
+    -fx-background-color: #9cf9a4;
+    -fx-background-radius: 12px;
+    -fx-padding: 10px;
+}
