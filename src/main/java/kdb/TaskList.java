@@ -60,11 +60,9 @@ public class TaskList implements Iterable<Task> {
         TaskList matchingTasks = new TaskList();
         String normalizedKeyword = keyword.toLowerCase();
 
-        for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(normalizedKeyword)) {
-                matchingTasks.add(task);
-            }
-        }
+        tasks.stream()
+                .filter(task -> task.getDescription().toLowerCase().contains(normalizedKeyword))
+                .forEach(matchingTasks::add);
         return matchingTasks;
     }
 
