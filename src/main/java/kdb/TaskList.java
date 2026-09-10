@@ -16,6 +16,7 @@ public class TaskList implements Iterable<Task> {
 
     /** Adds a task to the end of the list. */
     public void add(Task task) {
+        assert task != null : "Task added to the list must not be null";
         tasks.add(task);
     }
 
