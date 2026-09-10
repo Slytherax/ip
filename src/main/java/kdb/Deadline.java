@@ -18,6 +18,12 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    /** Creates a deadline with a priority. */
+    public Deadline(String description, LocalDateTime by, Priority priority) {
+        super(description, priority);
+        this.by = by;
+    }
+
     /** Returns a human-readable representation of this deadline. */
     @Override
     public String toString() {

@@ -12,6 +12,7 @@ public class Kdb {
     private final Storage storage;
     private final Parser parser;
     private TaskList tasks;
+    private Task taskAwaitingPriority;
 
     /**
      * Creates a Kdb instance and loads saved tasks.
@@ -181,6 +182,19 @@ public class Kdb {
      * @return response that can be displayed in the GUI
      */
     public String executeCommand(String input) {
+        if (taskAwaitingPriority != null) {
+            try {
+                taskAwaitingPriority.setPriority(Priority.fromInput(input));
+                saveTasksSafely(storage, tasks);
+                String response = "Priority set to " + taskAwaitingPriority.getPriority()
+                        + ":\n  " + taskAwaitingPriority;
+                taskAwaitingPriority = null;
+                return response;
+            } catch (IllegalArgumentException e) {
+                return e.getMessage() + " Please try again.";
+            }
+        }
+
         Parser.ParsedCommand parsed = parser.parse(input);
         String arguments = parsed.getArguments();
 
@@ -200,8 +214,8 @@ public class Kdb {
                         throw new KdbException("The description of a todo cannot be empty.");
                     }
                     tasks.add(new Todo(arguments));
-                    saveTasksSafely(storage, tasks);
-                    return "Got it. I've added this task:\n  " + tasks.get(tasks.size() - 1);
+                    taskAwaitingPriority = tasks.get(tasks.size() - 1);
+                    return "What priority should this task have? (high/medium/low)";
                 case MARK:
                 case UNMARK: {
                     String action = parsed.getCommand() == CommandType.MARK ? "mark" : "unmark";
@@ -265,8 +279,8 @@ public class Kdb {
                             + "Example: deadline submit report /by 5/9/2026 1800");
         }
         tasks.add(new Deadline(parts[0].trim(), date));
-        saveTasksSafely(storage, tasks);
-        return "Got it. I've added this task:\n  " + tasks.get(tasks.size() - 1);
+        taskAwaitingPriority = tasks.get(tasks.size() - 1);
+        return "What priority should this task have? (high/medium/low)";
     }
 
     /** Adds an event from GUI command arguments. */
@@ -292,8 +306,8 @@ public class Kdb {
                             + "Example: event team meeting /from Monday 2pm /to 3pm");
         }
         tasks.add(new Event(fromParts[0].trim(), toParts[0].trim(), toParts[1].trim()));
-        saveTasksSafely(storage, tasks);
-        return "Got it. I've added this task:\n  " + tasks.get(tasks.size() - 1);
+        taskAwaitingPriority = tasks.get(tasks.size() - 1);
+        return "What priority should this task have? (high/medium/low)";
     }
 
     /**

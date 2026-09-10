@@ -15,11 +15,11 @@ class TaskTest {
         Task task = new Task("read book");
 
         assertFalse(task.isDone());
-        assertEquals("[ ] read book", task.toString());
+        assertEquals("[medium][ ] read book", task.toString());
 
         task.markAsDone();
         assertTrue(task.isDone());
-        assertEquals("[X] read book", task.toString());
+        assertEquals("[medium][X] read book", task.toString());
 
         task.markAsNotDone();
         assertFalse(task.isDone());
@@ -31,7 +31,7 @@ class TaskTest {
         todo.markAsDone();
 
         assertEquals("T | 1 | join sports club", todo.toFileFormat());
-        assertEquals("[T][X] join sports club", todo.toString());
+        assertEquals("[T][medium][X] join sports club", todo.toString());
     }
 
     @Test
@@ -39,7 +39,7 @@ class TaskTest {
         Deadline deadline = new Deadline(
                 "return book", LocalDateTime.of(2019, 12, 2, 18, 0));
 
-        assertEquals("[D][ ] return book (by: Dec 02 2019, 6:00 pm)", deadline.toString());
+        assertEquals("[D][medium][ ] return book (by: Dec 02 2019, 6:00 pm)", deadline.toString());
         assertEquals("D | 0 | return book | 2/12/2019 1800", deadline.toFileFormat());
     }
 
@@ -47,7 +47,7 @@ class TaskTest {
     void eventFormatsStartAndEndTimes() {
         Event event = new Event("project meeting", "Aug 6th 2pm", "4pm");
 
-        assertEquals("[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)", event.toString());
+        assertEquals("[E][medium][ ] project meeting (from: Aug 6th 2pm to: 4pm)", event.toString());
         assertEquals("E | 0 | project meeting | Aug 6th 2pm | 4pm", event.toFileFormat());
     }
 }

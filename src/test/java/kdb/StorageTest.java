@@ -31,10 +31,10 @@ class StorageTest {
         TaskList loaded = storage.load();
 
         assertEquals(3, loaded.size());
-        assertEquals("[T][X] read book", loaded.get(0).toString());
+        assertEquals("[T][medium][X] read book", loaded.get(0).toString());
         assertTrue(loaded.get(0).isDone());
-        assertEquals("[D][ ] return book (by: Dec 02 2019, 6:00 pm)", loaded.get(1).toString());
-        assertEquals("[E][ ] meeting (from: Monday 2pm to: 3pm)", loaded.get(2).toString());
+        assertEquals("[D][medium][ ] return book (by: Dec 02 2019, 6:00 pm)", loaded.get(1).toString());
+        assertEquals("[E][medium][ ] meeting (from: Monday 2pm to: 3pm)", loaded.get(2).toString());
     }
 
     @Test

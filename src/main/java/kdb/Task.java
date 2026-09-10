@@ -4,6 +4,7 @@ package kdb;
 public class Task {
     private final String description;
     private boolean isDone;
+    private Priority priority;
 
     /**
      * Creates an unfinished task with the given description.
@@ -11,8 +12,14 @@ public class Task {
      * @param description text that describes the task
      */
     public Task(String description) {
+        this(description, Priority.MEDIUM);
+    }
+
+    /** Creates a task with the given description and priority. */
+    public Task(String description, Priority priority) {
         this.description = description;
         this.isDone = false;
+        this.priority = priority;
     }
 
     /** Returns the task description. */
@@ -32,6 +39,16 @@ public class Task {
      */
     public boolean isDone() {
         return isDone;
+    }
+
+    /** Returns this task's priority. */
+    public Priority getPriority() {
+        return priority;
+    }
+
+    /** Changes this task's priority. */
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
     /**
@@ -56,6 +73,6 @@ public class Task {
     /** Returns a human-readable representation of this task. */
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + description;
+        return "[" + priority + "][" + getStatusIcon() + "] " + description;
     }
 }

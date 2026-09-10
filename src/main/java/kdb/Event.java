@@ -18,6 +18,13 @@ public class Event extends Task {
         this.to = to;
     }
 
+    /** Creates an event with a priority. */
+    public Event(String description, String from, String to, Priority priority) {
+        super(description, priority);
+        this.from = from;
+        this.to = to;
+    }
+
     /** Returns a human-readable representation of this event. */
     @Override
     public String toString() {

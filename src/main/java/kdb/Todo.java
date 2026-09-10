@@ -11,6 +11,11 @@ public class Todo extends Task {
         super(description);
     }
 
+    /** Creates a todo with a priority. */
+    public Todo(String description, Priority priority) {
+        super(description, priority);
+    }
+
     /** Returns a human-readable representation of this todo. */
     @Override
     public String toString() {
