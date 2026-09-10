@@ -2,6 +2,7 @@ package kdb;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /** Represents a task that must be completed by a date and time. */
 public class Deadline extends Task {
@@ -22,10 +23,11 @@ public class Deadline extends Task {
     @Override
     public String toString() {
         DateTimeFormatter formatter =
-                DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
+                DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a", Locale.ENGLISH);
+        String formattedDate = by.format(formatter).replace("AM", "am").replace("PM", "pm");
 
         return "[D]" + super.toString()
-                + " (by: " + by.format(formatter) + ")";
+                + " (by: " + formattedDate + ")";
     }
 
     /** Returns the representation used when saving this deadline. */
