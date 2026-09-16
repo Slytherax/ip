@@ -221,17 +221,17 @@ public class Kdb {
         try {
             switch (parsed.getCommand()) {
                 case BYE:
-                    return new CommandResponse("Bye. Hope to see you again soon!", false);
+                    return new CommandResponse("Full time. See you next match!", false);
                 case LIST:
                     return new CommandResponse(
-                            formatTasks(tasks, "Here are the tasks in your list:"), false);
+                            formatTasks(tasks, "Here's the current match sheet:"), false);
                 case FIND:
                     if (arguments.isEmpty()) {
                         throw new KdbException("Please provide a keyword to find.");
                     }
                     return new CommandResponse(
                             formatTasks(tasks.find(arguments),
-                                    "Here are the matching tasks in your list:"), false);
+                                    "Here are the matching plays:"), false);
                 case TODO:
                     if (arguments.isEmpty()) {
                         throw new KdbException("The description of a todo cannot be empty.");
@@ -239,7 +239,8 @@ public class Kdb {
                     tasks.add(new Todo(arguments));
                     taskAwaitingPriority = tasks.get(tasks.size() - 1);
                     return new CommandResponse(
-                            "What priority should this task have? (high/medium/low)", false);
+                            "Help me make the perfect assist. What priority should this task have? "
+                                    + "(high/medium/low)", false);
                 case MARK:
                     // Fallthrough
                 case UNMARK: {
@@ -251,13 +252,15 @@ public class Kdb {
                         tasks.get(index).markAsNotDone();
                     }
                     saveTasksSafely(storage, tasks);
-                    return new CommandResponse("Updated task:\n  " + tasks.get(index), false);
+                    return new CommandResponse("Great finish! Updated task:\n  "
+                            + tasks.get(index), false);
                 }
                 case DELETE: {
                     int index = parseTaskIndex(arguments, "delete", tasks.size());
                     Task removed = tasks.remove(index);
                     saveTasksSafely(storage, tasks);
-                    return new CommandResponse("Noted. I've removed this task:\n  " + removed, false);
+                    return new CommandResponse("Cleared from the pitch! Removed this task:\n  "
+                            + removed, false);
                 }
                 case DEADLINE:
                     return new CommandResponse(addDeadline(arguments), false);

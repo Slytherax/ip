@@ -54,7 +54,7 @@ public class Ui implements AutoCloseable {
 
     /** Displays all tasks with their one-based list numbers. */
     public void showTaskList(TaskList tasks) {
-        System.out.println("Here are the tasks in your list:");
+        System.out.println("Here's the current match sheet:");
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println((i + 1) + "." + tasks.get(i));
         }
@@ -62,7 +62,7 @@ public class Ui implements AutoCloseable {
 
     /** Displays tasks matching a search keyword. */
     public void showMatchingTasks(TaskList tasks) {
-        System.out.println("Here are the matching tasks in your list:");
+        System.out.println("Here are the matching plays:");
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println((i + 1) + "." + tasks.get(i));
         }
@@ -70,26 +70,26 @@ public class Ui implements AutoCloseable {
 
     /** Displays confirmation after adding a task. */
     public void showAdded(Task task, int taskCount) {
-        System.out.println("Got it. I've added this task:");
+        System.out.println("Perfect pass! I've added this task:");
         System.out.println("  " + task);
         System.out.println("Now you have " + taskCount + " tasks in the list.");
     }
 
     /** Displays confirmation after marking a task done. */
     public void showMarked(Task task) {
-        System.out.println("Nice! I've marked this task as done:");
+        System.out.println("Great finish! I've marked this task as done:");
         System.out.println("  " + task);
     }
 
     /** Displays confirmation after marking a task incomplete. */
     public void showUnmarked(Task task) {
-        System.out.println("OK, I've marked this task as not done yet:");
+        System.out.println("Back in play! I've marked this task as not done:");
         System.out.println("  " + task);
     }
 
     /** Displays confirmation after deleting a task. */
     public void showDeleted(Task task, int taskCount) {
-        System.out.println("Noted. I've removed this task:");
+        System.out.println("Cleared from the pitch! I've removed this task:");
         System.out.println("  " + task);
         System.out.println("Now you have " + taskCount + " tasks in the list.");
     }
@@ -106,7 +106,7 @@ public class Ui implements AutoCloseable {
 
     /** Returns help text for an unrecognized command. */
     public static String unknownCommandHelp() {
-        return "I'm not sure what that means. Here's what I can do:\n\n"
+        return "That pass went astray. Here's what I can do:\n\n"
                 + commandGuide();
     }
 

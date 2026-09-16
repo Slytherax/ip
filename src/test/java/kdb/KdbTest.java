@@ -17,7 +17,9 @@ class KdbTest {
     void executeCommandResult_allCommands_returnExpectedResponses() {
         Kdb bot = createBot();
 
-        assertFalse(bot.executeCommandResult("list").isError());
+        Kdb.CommandResponse listResponse = bot.executeCommandResult("list");
+        assertFalse(listResponse.isError());
+        assertTrue(listResponse.text().contains("current match sheet"));
         assertFalse(bot.executeCommandResult("todo write report").isError());
         assertFalse(bot.executeCommandResult("high").isError());
         assertFalse(bot.executeCommandResult("deadline submit report /by 2/12/2019 1800")
@@ -38,7 +40,7 @@ class KdbTest {
         Kdb.CommandResponse response = createBot().executeCommandResult("remove everything");
 
         assertTrue(response.isError());
-        assertTrue(response.text().contains("I'm not sure"));
+        assertTrue(response.text().contains("That pass went astray"));
     }
 
     @Test
