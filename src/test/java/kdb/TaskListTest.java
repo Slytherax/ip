@@ -1,6 +1,7 @@
 package kdb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
@@ -66,5 +67,20 @@ class TaskListTest {
         tasks.add(new Todo("Read a book"));
 
         assertEquals(0, tasks.find("meeting").size());
+    }
+
+    @Test
+    void getOutsideListBounds_throwsIndexOutOfBoundsException() {
+        TaskList tasks = new TaskList();
+
+        assertThrows(IndexOutOfBoundsException.class, () -> tasks.get(0));
+    }
+
+    @Test
+    void removeOutsideListBounds_throwsIndexOutOfBoundsException() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("only task"));
+
+        assertThrows(IndexOutOfBoundsException.class, () -> tasks.remove(1));
     }
 }

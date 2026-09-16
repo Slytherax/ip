@@ -99,4 +99,18 @@ class StorageTest {
 
         assertThrows(IOException.class, storage::load);
     }
+
+    @Test
+    void loadDirectoryAsTaskFile_throwsIoException() {
+        Storage storage = new Storage(temporaryDirectory.toString());
+
+        assertThrows(IOException.class, storage::load);
+    }
+
+    @Test
+    void saveToDirectoryPath_throwsIoException() {
+        Storage storage = new Storage(temporaryDirectory.toString());
+
+        assertThrows(IOException.class, () -> storage.save(new TaskList()));
+    }
 }

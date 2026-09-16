@@ -74,6 +74,27 @@ class KdbTest {
     }
 
     @Test
+    void executeCommandResult_invalidDateOrEventFormat_isMarkedAsError() {
+        Kdb bot = createBot();
+
+        assertTrue(bot.executeCommandResult("deadline submit report /by not-a-date")
+                .isError());
+        assertTrue(bot.executeCommandResult("event meeting /from Monday 2pm")
+                .isError());
+    }
+
+    @Test
+    void executeCommandResult_invalidTaskNumbers_areMarkedAsErrors() {
+        Kdb bot = createBot();
+        bot.executeCommandResult("todo read book");
+        bot.executeCommandResult("medium");
+
+        assertTrue(bot.executeCommandResult("mark zero").isError());
+        assertTrue(bot.executeCommandResult("mark 2").isError());
+        assertTrue(bot.executeCommandResult("delete -1").isError());
+    }
+
+    @Test
     void executeCommandResult_tasksArePersistedBetweenBotInstances() {
         Path taskFile = temporaryDirectory.resolve("tasks.txt");
         Kdb firstBot = new Kdb(new Storage(taskFile.toString()));

@@ -26,6 +26,18 @@ class TaskTest {
     }
 
     @Test
+    void taskPriority_canBeReadAndChanged() {
+        Task task = new Task("read book", Priority.LOW);
+
+        assertEquals(Priority.LOW, task.getPriority());
+
+        task.setPriority(Priority.HIGH);
+
+        assertEquals(Priority.HIGH, task.getPriority());
+        assertEquals("[high][ ] read book", task.toString());
+    }
+
+    @Test
     void todoToFileFormat_containsTypeStatusAndDescription() {
         Todo todo = new Todo("join sports club");
         todo.markAsDone();
