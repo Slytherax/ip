@@ -14,22 +14,27 @@ public class Ui implements AutoCloseable {
         scanner = new Scanner(System.in);
     }
 
-    /** Displays the startup banner and greeting. */
+    /** Displays the startup greeting and command guide. */
     public void showWelcome() {
+        System.out.println(welcomeBanner());
         System.out.println(welcomeMessage());
     }
 
-    /** Returns the startup banner and greeting for display. */
-    public static String welcomeMessage() {
-        String banner =
-                "mm   mm   mmmmmm    mmmmmmm\n"
+    /** Returns the KDB banner for display. */
+    public static String welcomeBanner() {
+        return "mm   mm   mmmmmm    mmmmmmm\n"
                 + "##  ##    ##    ##  ##    ##\n"
                 + "##m##     ##    ##  ##    ##\n"
                 + "#####     ##    ##  #######\n"
                 + "##  ##m   ##    ##  ##    ##\n"
                 + "##   ##m  ##mmm##   ##mmmm##";
+    }
 
-        return banner + "\nHello! I'm Kdb.\nWhat can I do for you?";
+    /** Returns the startup greeting and command guide for display. */
+    public static String welcomeMessage() {
+        return "Hello, I am KDB and I will be your personal assistant!\n"
+                + "I can do the following:\n\n"
+                + commandGuide();
     }
 
     /** Reads the next command from the user. */
@@ -101,17 +106,22 @@ public class Ui implements AutoCloseable {
 
     /** Returns help text for an unrecognized command. */
     public static String unknownCommandHelp() {
-        return
-                "I'm not sure what that means. Here's what I can do:\n"
-                + "  todo <description>\n"
-                + "  deadline <description> /by <time>\n"
-                + "  event <description> /from <start> /to <end>\n"
-                + "  list\n"
-                + "  mark <task number>\n"
-                + "  unmark <task number>\n"
-                + "  delete <task number>\n"
-                + "  find <keyword>\n"
-                + "  bye";
+        return "I'm not sure what that means. Here's what I can do:\n\n"
+                + commandGuide();
+    }
+
+    /** Returns the available commands and their purposes. */
+    private static String commandGuide() {
+        return String.join("\n",
+                "todo <description> - Add a task without a deadline.",
+                "deadline <description> /by <date/time> - Add a task with a deadline.",
+                "event <description> /from <start> /to <end> - Add an event.",
+                "list - Show all tasks.",
+                "find <keyword> - Find tasks containing a keyword.",
+                "mark <task number> - Mark a task as done.",
+                "unmark <task number> - Mark a task as not done.",
+                "delete <task number> - Delete a task.",
+                "bye - Exit KDB.");
     }
 
     /** Closes the console input scanner. */

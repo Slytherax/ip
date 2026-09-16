@@ -16,7 +16,6 @@ public class MainWindow {
 
     private final Kdb kdb = new Kdb();
     private final Image botImage = loadImage("/images/kdb.png");
-    private final Image userImage = loadImage("/images/hal.png");
 
     @FXML
     private TextField userInput;
@@ -30,7 +29,8 @@ public class MainWindow {
     /** Adds Kdb's initial greeting after the FXML controls are created. */
     @FXML
     private void initialize() {
-        addMessages(botImage, false, Ui.welcomeMessage());
+        addMessages(botImage, false, false, true, Ui.welcomeBanner());
+        addMessages(botImage, false, false, false, Ui.welcomeMessage());
         dialogContainer.heightProperty().addListener(
                 (observable, oldHeight, newHeight) -> scrollToBottom());
         userInput.requestFocus();
@@ -44,10 +44,10 @@ public class MainWindow {
         String input = userInput.getText();
 
         if (!input.isBlank()) {
-            String response = kdb.executeCommand(input);
+            Kdb.CommandResponse response = kdb.executeCommandResult(input);
 
-            addMessages(userImage, true, input);
-            addMessages(botImage, false, response);
+            addMessages(null, true, false, false, input);
+            addMessages(botImage, false, response.isError(), false, response.text());
 
             userInput.clear();
             scrollToBottom();
@@ -66,9 +66,11 @@ public class MainWindow {
     }
 
     /** Adds any number of messages with the selected speaker's styling. */
-    private void addMessages(Image image, boolean isUser, String... messages) {
+    private void addMessages(Image image, boolean isUser, boolean isError,
+            boolean isAsciiArt, String... messages) {
         for (String message : messages) {
-            dialogContainer.getChildren().add(new DialogBox(message, image, isUser));
+            dialogContainer.getChildren().add(
+                    new DialogBox(message, image, isUser, isError, isAsciiArt));
         }
     }
 

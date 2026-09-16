@@ -7,6 +7,10 @@ import java.time.format.DateTimeParseException;
 
 /** Coordinates the chatbot's user interaction, commands, tasks, and storage. */
 public class Kdb {
+    /** Contains a GUI response and whether it should use error styling. */
+    public record CommandResponse(String text, boolean isError) {
+    }
+
     private final Storage storage;
     private final Parser parser;
     private TaskList tasks;
@@ -16,7 +20,16 @@ public class Kdb {
      * Creates a Kdb instance and loads saved tasks.
      */
     public Kdb() {
-        storage = new Storage("data/tasks.txt");
+        this(new Storage("data/tasks.txt"));
+    }
+
+    /**
+     * Creates a Kdb instance using the given storage.
+     *
+     * @param storage storage used to load and save tasks
+     */
+    public Kdb(Storage storage) {
+        this.storage = storage;
         parser = new Parser();
 
         try {
@@ -25,6 +38,7 @@ public class Kdb {
             tasks = new TaskList();
         }
     }
+
     /** Starts Kdb and runs its command loop. */
     public static void main(String[] args) {
         Storage storage = new Storage("data/tasks.txt");
@@ -176,13 +190,18 @@ public class Kdb {
         ui.showAdded(tasks.get(tasks.size() - 1), tasks.size());
     }
 
+    /** Returns the GUI response text for compatibility with text-only callers. */
+    public String executeCommand(String input) {
+        return executeCommandResult(input).text();
+    }
+
     /**
      * Processes one command from the graphical user interface.
      *
      * @param input command entered by the user
-     * @return response that can be displayed in the GUI
+     * @return response text and error status for display in the GUI
      */
-    public String executeCommand(String input) {
+    public CommandResponse executeCommandResult(String input) {
         if (taskAwaitingPriority != null) {
             try {
                 taskAwaitingPriority.setPriority(Priority.fromInput(input));
@@ -190,9 +209,9 @@ public class Kdb {
                 String response = "Priority set to " + taskAwaitingPriority.getPriority()
                                 + ":\n  " + taskAwaitingPriority;
                 taskAwaitingPriority = null;
-                return response;
+                return new CommandResponse(response, false);
             } catch (IllegalArgumentException e) {
-                return e.getMessage() + " Please try again.";
+                return new CommandResponse(e.getMessage() + " Please try again.", true);
             }
         }
 
@@ -202,21 +221,25 @@ public class Kdb {
         try {
             switch (parsed.getCommand()) {
                 case BYE:
-                    return "Bye. Hope to see you again soon!";
+                    return new CommandResponse("Bye. Hope to see you again soon!", false);
                 case LIST:
-                    return formatTasks(tasks, "Here are the tasks in your list:");
+                    return new CommandResponse(
+                            formatTasks(tasks, "Here are the tasks in your list:"), false);
                 case FIND:
                     if (arguments.isEmpty()) {
                         throw new KdbException("Please provide a keyword to find.");
                     }
-                    return formatTasks(tasks.find(arguments), "Here are the matching tasks in your list:");
+                    return new CommandResponse(
+                            formatTasks(tasks.find(arguments),
+                                    "Here are the matching tasks in your list:"), false);
                 case TODO:
                     if (arguments.isEmpty()) {
                         throw new KdbException("The description of a todo cannot be empty.");
                     }
                     tasks.add(new Todo(arguments));
                     taskAwaitingPriority = tasks.get(tasks.size() - 1);
-                    return "What priority should this task have? (high/medium/low)";
+                    return new CommandResponse(
+                            "What priority should this task have? (high/medium/low)", false);
                 case MARK:
                     // Fallthrough
                 case UNMARK: {
@@ -228,25 +251,25 @@ public class Kdb {
                         tasks.get(index).markAsNotDone();
                     }
                     saveTasksSafely(storage, tasks);
-                    return "Updated task:\n  " + tasks.get(index);
+                    return new CommandResponse("Updated task:\n  " + tasks.get(index), false);
                 }
                 case DELETE: {
                     int index = parseTaskIndex(arguments, "delete", tasks.size());
                     Task removed = tasks.remove(index);
                     saveTasksSafely(storage, tasks);
-                    return "Noted. I've removed this task:\n  " + removed;
+                    return new CommandResponse("Noted. I've removed this task:\n  " + removed, false);
                 }
                 case DEADLINE:
-                    return addDeadline(arguments);
+                    return new CommandResponse(addDeadline(arguments), false);
                 case EVENT:
-                    return addEvent(arguments);
+                    return new CommandResponse(addEvent(arguments), false);
                 case UNKNOWN:
                     // Fallthrough
                 default:
-                    return Ui.unknownCommandHelp();
+                    return new CommandResponse(Ui.unknownCommandHelp(), true);
             }
         } catch (KdbException e) {
-            return e.getMessage();
+            return new CommandResponse(e.getMessage(), true);
         }
     }
 

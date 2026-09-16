@@ -7,19 +7,41 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.shape.Circle;
 
 /** Displays one chatbot or user message with an optional circular avatar. */
 public class DialogBox extends HBox {
     private static final double AVATAR_SIZE = 40.0;
 
-    /** Creates a styled message box. */
+    /** Creates a message box without error styling. */
     public DialogBox(String message, Image image, boolean isUser) {
+        this(message, image, isUser, false, false);
+    }
+
+    /** Creates a styled message box. */
+    public DialogBox(String message, Image image, boolean isUser, boolean isError) {
+        this(message, image, isUser, isError, false);
+    }
+
+    /** Creates a styled message box with optional monospaced ASCII art. */
+    public DialogBox(String message, Image image, boolean isUser, boolean isError,
+            boolean isAsciiArt) {
         Label text = new Label(message);
-        text.setWrapText(isUser);
+        text.setWrapText(true);
         text.setMaxWidth(isUser ? 450.0 : Double.MAX_VALUE);
+        text.setMinHeight(Region.USE_PREF_SIZE);
         text.setPadding(new Insets(10.0));
-        text.getStyleClass().add(isUser ? "user-message" : "bot-message");
+        text.getStyleClass().add(isError ? "error-message" :
+                isUser ? "user-message" : "bot-message");
+        if (isAsciiArt) {
+            text.getStyleClass().add("ascii-message");
+        }
+
+        if (!isUser) {
+            text.setPrefWidth(560.0);
+            text.setMaxWidth(560.0);
+        }
 
         ImageView avatar = createAvatar(image);
         setSpacing(8.0);
