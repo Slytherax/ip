@@ -72,4 +72,31 @@ class StorageTest {
 
         assertThrows(IOException.class, storage::load);
     }
+
+    @Test
+    void loadInvalidTaskStatus_throwsIoException() throws IOException {
+        Path file = temporaryDirectory.resolve("invalid-status.txt");
+        Files.writeString(file, "T | pending | unknown task\n");
+        Storage storage = new Storage(file.toString());
+
+        assertThrows(IOException.class, storage::load);
+    }
+
+    @Test
+    void loadTaskWithExtraFields_throwsIoException() throws IOException {
+        Path file = temporaryDirectory.resolve("extra-fields.txt");
+        Files.writeString(file, "T | 0 | task | unexpected\n");
+        Storage storage = new Storage(file.toString());
+
+        assertThrows(IOException.class, storage::load);
+    }
+
+    @Test
+    void loadEventWithMissingTime_throwsIoException() throws IOException {
+        Path file = temporaryDirectory.resolve("missing-event-time.txt");
+        Files.writeString(file, "E | 0 | meeting | Monday 2pm |\n");
+        Storage storage = new Storage(file.toString());
+
+        assertThrows(IOException.class, storage::load);
+    }
 }

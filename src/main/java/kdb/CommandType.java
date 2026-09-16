@@ -1,5 +1,7 @@
 package kdb;
 
+import java.util.Locale;
+
 /** Represents the commands understood by Kdb. */
 public enum CommandType {
     BYE, LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, FIND, UNKNOWN;
@@ -11,8 +13,11 @@ public enum CommandType {
      * @return the matching command, or {@code UNKNOWN} when there is no match
      */
     public static CommandType fromWord(String word) {
+        if (word == null || word.isBlank()) {
+            return UNKNOWN;
+        }
         try {
-            return CommandType.valueOf(word.toUpperCase());
+            return CommandType.valueOf(word.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
             return UNKNOWN;
         }

@@ -118,7 +118,7 @@ public class Kdb {
     }
 
     private static void updateTaskStatus(Storage storage, Ui ui, TaskList tasks,
-                                         String arguments, CommandType command) throws KdbException {
+            String arguments, CommandType command) throws KdbException {
         String action = command == CommandType.MARK ? "mark" : "unmark";
         int index = parseTaskIndex(arguments, action, tasks.size());
         if (command == CommandType.MARK) {
@@ -210,6 +210,8 @@ public class Kdb {
                                 + ":\n  " + taskAwaitingPriority;
                 taskAwaitingPriority = null;
                 return new CommandResponse(response, false);
+            } catch (KdbException e) {
+                return new CommandResponse(e.getMessage(), true);
             } catch (IllegalArgumentException e) {
                 return new CommandResponse(e.getMessage() + " Please try again.", true);
             }
@@ -372,11 +374,11 @@ public class Kdb {
         return index;
     }
 
-    private static void saveTasksSafely(Storage storage, TaskList tasks) {
+    private static void saveTasksSafely(Storage storage, TaskList tasks) throws KdbException {
         try {
             storage.save(tasks);
         } catch (IOException e) {
-            System.out.println("An error occurred while saving tasks: " + e.getMessage());
+            throw new KdbException("I couldn't save the task list. Please check file access.", e);
         }
     }
 

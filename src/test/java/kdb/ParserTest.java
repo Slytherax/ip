@@ -1,6 +1,7 @@
 package kdb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +38,24 @@ class ParserTest {
         Parser.ParsedCommand result = parser.parse("list");
 
         assertEquals(CommandType.LIST, result.getCommand());
+        assertEquals("", result.getArguments());
+    }
+
+    @Test
+    void parseBlankInput_returnsUnknownCommandWithoutArguments() {
+        Parser.ParsedCommand result = parser.parse("   ");
+
+        assertNotNull(result);
+        assertEquals(CommandType.UNKNOWN, result.getCommand());
+        assertEquals("", result.getArguments());
+    }
+
+    @Test
+    void parseNullInput_returnsUnknownCommandWithoutArguments() {
+        Parser.ParsedCommand result = parser.parse(null);
+
+        assertNotNull(result);
+        assertEquals(CommandType.UNKNOWN, result.getCommand());
         assertEquals("", result.getArguments());
     }
 }

@@ -79,21 +79,27 @@ public class Storage {
      */
     private Task parseTask(String line) throws IOException {
         String[] parts = line.split("\\s*\\|\\s*");
-        if (parts.length < 3) {
+        if (parts.length < 3 || parts[2].trim().isEmpty()) {
             throw new IOException("invalid task format: " + line);
         }
 
         String type = parts[0];
+        if (!parts[1].equals("0") && !parts[1].equals("1")) {
+            throw new IOException("invalid task status: " + line);
+        }
         boolean isDone = parts[1].equals("1");
         Task task;
 
         try {
             switch (type) {
                 case "T":
+                    if (parts.length != 3) {
+                        throw new IOException("invalid todo format: " + line);
+                    }
                     task = new Todo(parts[2]);
                     break;
                 case "D":
-                    if (parts.length < 4) {
+                    if (parts.length != 4) {
                         throw new IOException("invalid deadline format: " + line);
                     }
                     LocalDateTime deadline = LocalDateTime.parse(
@@ -101,7 +107,8 @@ public class Storage {
                     task = new Deadline(parts[2], deadline);
                     break;
                 case "E":
-                    if (parts.length < 5) {
+                    if (parts.length != 5 || parts[3].trim().isEmpty()
+                            || parts[4].trim().isEmpty()) {
                         throw new IOException("invalid event format: " + line);
                     }
                     task = new Event(parts[2], parts[3], parts[4]);

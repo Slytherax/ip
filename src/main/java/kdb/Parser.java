@@ -32,6 +32,9 @@ public class Parser {
      * @return the recognized command and trimmed arguments
      */
     public ParsedCommand parse(String input) {
+        if (input == null || input.isBlank()) {
+            return new ParsedCommand(CommandType.UNKNOWN, "");
+        }
         String[] split = input.trim().split("\\s+", 2);
         String commandWord = split[0];
         String arguments = split.length > 1 ? split[1].trim() : "";

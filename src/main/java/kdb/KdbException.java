@@ -10,4 +10,9 @@ public class KdbException extends Exception {
     public KdbException(String message) {
         super(message);
     }
+
+    /** Creates an exception with a message and the underlying cause. */
+    public KdbException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

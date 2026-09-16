@@ -54,6 +54,8 @@ class KdbTest {
         assertTrue(bot.executeCommandResult("mark").isError());
         assertTrue(bot.executeCommandResult("unmark").isError());
         assertTrue(bot.executeCommandResult("delete").isError());
+        assertTrue(bot.executeCommandResult("   ").isError());
+        assertTrue(bot.executeCommandResult(null).isError());
     }
 
     @Test
