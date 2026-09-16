@@ -7,8 +7,6 @@ import java.time.format.DateTimeParseException;
 
 /** Coordinates the chatbot's user interaction, commands, tasks, and storage. */
 public class Kdb {
-    /** Starts Kdb and runs its command loop. */
-
     private final Storage storage;
     private final Parser parser;
     private TaskList tasks;
@@ -27,6 +25,7 @@ public class Kdb {
             tasks = new TaskList();
         }
     }
+    /** Starts Kdb and runs its command loop. */
     public static void main(String[] args) {
         Storage storage = new Storage("data/tasks.txt");
         Parser parser = new Parser();
@@ -64,7 +63,7 @@ public class Kdb {
     }
 
     private static boolean executeCliCommand(Storage storage, Ui ui, TaskList tasks,
-                                             Parser.ParsedCommand parsedCommand) throws KdbException {
+            Parser.ParsedCommand parsedCommand) throws KdbException {
         String arguments = parsedCommand.getArguments();
         switch (parsedCommand.getCommand()) {
             case BYE:
@@ -80,6 +79,7 @@ public class Kdb {
                 ui.showMatchingTasks(tasks.find(arguments));
                 return false;
             case MARK:
+                // Fallthrough
             case UNMARK:
                 updateTaskStatus(storage, ui, tasks, arguments, parsedCommand.getCommand());
                 return false;
@@ -96,6 +96,7 @@ public class Kdb {
                 addCliEvent(storage, ui, tasks, arguments);
                 return false;
             case UNKNOWN:
+                // Fallthrough
             default:
                 ui.showUnknownCommandHelp();
                 return false;
@@ -143,12 +144,12 @@ public class Kdb {
         String[] parts = arguments.split(" /by ", 2);
         if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
             throw new KdbException("A deadline needs a description and date/time, "
-                    + "e.g. deadline return book /by 2/12/2019 1800.");
+                            + "e.g. deadline return book /by 2/12/2019 1800.");
         }
         LocalDateTime deadline = parseDate(parts[1].trim());
         if (deadline == null) {
             throw new KdbException("Invalid date/time. Please use d/M/yyyy HHmm, "
-                    + "e.g. 2/12/2019 1800.");
+                            + "e.g. 2/12/2019 1800.");
         }
         tasks.add(new Deadline(parts[0].trim(), deadline));
         saveTasksSafely(storage, tasks);
@@ -163,12 +164,12 @@ public class Kdb {
         String[] fromParts = arguments.split(" /from ", 2);
         if (fromParts.length < 2 || fromParts[0].trim().isEmpty()) {
             throw new KdbException("An event needs a /from time, "
-                    + "e.g. event meeting /from Mon 2pm /to 4pm.");
+                            + "e.g. event meeting /from Mon 2pm /to 4pm.");
         }
         String[] toParts = fromParts[1].split(" /to ", 2);
         if (toParts.length < 2 || toParts[0].trim().isEmpty() || toParts[1].trim().isEmpty()) {
             throw new KdbException("An event needs a /to time, "
-                    + "e.g. event meeting /from Mon 2pm /to 4pm.");
+                            + "e.g. event meeting /from Mon 2pm /to 4pm.");
         }
         tasks.add(new Event(fromParts[0].trim(), toParts[0].trim(), toParts[1].trim()));
         saveTasksSafely(storage, tasks);
@@ -187,7 +188,7 @@ public class Kdb {
                 taskAwaitingPriority.setPriority(Priority.fromInput(input));
                 saveTasksSafely(storage, tasks);
                 String response = "Priority set to " + taskAwaitingPriority.getPriority()
-                        + ":\n  " + taskAwaitingPriority;
+                                + ":\n  " + taskAwaitingPriority;
                 taskAwaitingPriority = null;
                 return response;
             } catch (IllegalArgumentException e) {
@@ -217,6 +218,7 @@ public class Kdb {
                     taskAwaitingPriority = tasks.get(tasks.size() - 1);
                     return "What priority should this task have? (high/medium/low)";
                 case MARK:
+                    // Fallthrough
                 case UNMARK: {
                     String action = parsed.getCommand() == CommandType.MARK ? "mark" : "unmark";
                     int index = parseTaskIndex(arguments, action, tasks.size());
@@ -239,6 +241,7 @@ public class Kdb {
                 case EVENT:
                     return addEvent(arguments);
                 case UNKNOWN:
+                    // Fallthrough
                 default:
                     return Ui.unknownCommandHelp();
             }
@@ -313,9 +316,9 @@ public class Kdb {
     /**
      * Parses and validates the task index for mark/unmark/delete commands.
      *
-     * @param arguments  the text after the command word (e.g. "3")
+     * @param arguments the text after the command word (e.g. "3")
      * @param commandWord "mark", "unmark", or "delete", used in error messages
-     * @param taskCount  current number of tasks, used for bounds checking
+     * @param taskCount current number of tasks, used for bounds checking
      * @return zero-based task index
      * @throws KdbException if the index is missing, not a number, or out of range
      */
@@ -323,7 +326,7 @@ public class Kdb {
         if (arguments.isEmpty()) {
             throw new KdbException(
                     "Please tell me which task number to " + commandWord
-                    + ", e.g. " + commandWord + " 2.");
+                            + ", e.g. " + commandWord + " 2.");
         }
 
         int index;
@@ -337,7 +340,7 @@ public class Kdb {
         if (index < 0 || index >= taskCount) {
             throw new KdbException(
                     "That task number doesn't exist. You currently have "
-                    + taskCount + " task(s).");
+                            + taskCount + " task(s).");
         }
 
         return index;

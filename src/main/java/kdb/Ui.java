@@ -23,11 +23,11 @@ public class Ui implements AutoCloseable {
     public static String welcomeMessage() {
         String banner =
                 "mm   mm   mmmmmm    mmmmmmm\n"
-              + "##  ##    ##    ##  ##    ##\n"
-              + "##m##     ##    ##  ##    ##\n"
-              + "#####     ##    ##  #######\n"
-              + "##  ##m   ##    ##  ##    ##\n"
-              + "##   ##m  ##mmm##   ##mmmm##";
+                + "##  ##    ##    ##  ##    ##\n"
+                + "##m##     ##    ##  ##    ##\n"
+                + "#####     ##    ##  #######\n"
+                + "##  ##m   ##    ##  ##    ##\n"
+                + "##   ##m  ##mmm##   ##mmmm##";
 
         return banner + "\nHello! I'm Kdb.\nWhat can I do for you?";
     }
@@ -103,15 +103,15 @@ public class Ui implements AutoCloseable {
     public static String unknownCommandHelp() {
         return
                 "I'm not sure what that means. Here's what I can do:\n"
-              + "  todo <description>\n"
-              + "  deadline <description> /by <time>\n"
-              + "  event <description> /from <start> /to <end>\n"
-              + "  list\n"
-              + "  mark <task number>\n"
-              + "  unmark <task number>\n"
-              + "  delete <task number>\n"
-              + "  find <keyword>\n"
-              + "  bye";
+                + "  todo <description>\n"
+                + "  deadline <description> /by <time>\n"
+                + "  event <description> /from <start> /to <end>\n"
+                + "  list\n"
+                + "  mark <task number>\n"
+                + "  unmark <task number>\n"
+                + "  delete <task number>\n"
+                + "  find <keyword>\n"
+                + "  bye";
     }
 
     /** Closes the console input scanner. */

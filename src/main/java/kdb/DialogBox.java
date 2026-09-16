@@ -2,12 +2,12 @@ package kdb;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Circle;
-import javafx.geometry.Rectangle2D;
 
 /** Displays one chatbot or user message with an optional circular avatar. */
 public class DialogBox extends HBox {

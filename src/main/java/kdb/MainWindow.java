@@ -13,7 +13,7 @@ import javafx.util.Duration;
  * Controls the Kdb JavaFX window.
  */
 public class MainWindow {
-    
+
     private final Kdb kdb = new Kdb();
     private final Image botImage = loadImage("/images/kdb.png");
     private final Image userImage = loadImage("/images/hal.png");
@@ -35,6 +35,7 @@ public class MainWindow {
                 (observable, oldHeight, newHeight) -> scrollToBottom());
         userInput.requestFocus();
     }
+
     /**
      * Displays the user's message when Send or Enter is used.
      */
@@ -76,6 +77,4 @@ public class MainWindow {
         var stream = MainWindow.class.getResourceAsStream(path);
         return stream == null ? null : new Image(stream);
     }
-
-    
 }
