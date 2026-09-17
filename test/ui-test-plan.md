@@ -1,195 +1,87 @@
 # UI Test Plan
 
+These tests cover the console interaction layer. Check the graphical
+interface manually by launching `./gradlew run` and resizing the window.
+
 ## Test command
 
+Run from the project root:
+
 ```sh
-rm -f data/tasks.txt && rm -rf out && javac -d out src/main/java/kdb/*.java && java -cp out kdb.Kdb
+./gradlew classes
+java -cp build/classes/java/main kdb.Kdb
 ```
 
-## Test cases
+Use a temporary copy of `data/tasks.txt` if the test should not change saved
+tasks.
 
-Add one third-level section for each UI test. Every test case must include an
-aim, its complete console input, and the complete expected console output.
+## 1. Exits on `bye`
 
-### Example: exits on bye
+**Aim:** Confirm that KDB displays the ASCII banner and exits after the
+farewell command.
 
-**Aim:** Confirm that the chatbot accepts the exit command and prints its farewell.
+**Input:** `bye`
 
-**Input:**
+**Expected output:** The banner and command guide are displayed, followed by
+`Full time. See you next match!`, and the program exits.
 
-```text
-bye
-```
+## 2. Saves and deletes a task
 
-**Expected output:**
-
-```text
-____________________________________________________________
-mm   mm   mmmmmm    mmmmmmm
-##  ##    ##    ##  ##    ##
-##m##     ##    ##  ##    ##
-#####     ##    ##  #######
-##  ##m   ##    ##  ##    ##
-##   ##m  ##mmm##   ##mmmm##
-Hello! I'm Kdb.
-What can I do for you?
-____________________________________________________________
-____________________________________________________________
-Bye. Hope to see you again soon!
-____________________________________________________________
-```
-
-### Saves the changed task list
-
-**Aim:** Confirm that adding and deleting a task completes successfully and triggers the write-only persistence path.
+**Aim:** Confirm that adding and deleting a task updates and persists the
+task list.
 
 **Input:**
 
 ```text
 todo buy milk
+high
 delete 1
 bye
 ```
 
-**Expected output:**
+**Expected output:** KDB displays `Perfect pass! I've added this task:`, shows
+the task, then displays `Cleared from the pitch! I've removed this task:` and
+finishes normally.
 
-```text
-____________________________________________________________
-mm   mm   mmmmmm    mmmmmmm
-##  ##    ##    ##  ##    ##
-##m##     ##    ##  ##    ##
-#####     ##    ##  #######
-##  ##m   ##    ##  ##    ##
-##   ##m  ##mmm##   ##mmmm##
-Hello! I'm Kdb.
-What can I do for you?
-____________________________________________________________
-____________________________________________________________
-Got it. I've added this task:
-  [T][ ] buy milk
-Now you have 1 tasks in the list.
-____________________________________________________________
-____________________________________________________________
-Noted. I've removed this task:
-  [T][ ] buy milk
-Now you have 0 tasks in the list.
-____________________________________________________________
-____________________________________________________________
-Bye. Hope to see you again soon!
-____________________________________________________________
-```
+## 3. Finds matching tasks
 
-## Executable JAR test
-
-**Aim:** Confirm that the packaged application can run from an otherwise empty
-folder and can save task data beside the JAR file.
-
-**Preparation:**
-
-From the project root, build the JAR:
-
-```text
-./gradlew clean shadowJar
-```
-
-Create an empty test folder, copy `build/libs/duke.jar` into it, and open a
-terminal in that folder.
-
-**Input:**
-
-```text
-todo packaged task
-list
-bye
-```
-
-**Command:**
-
-```text
-java -jar "duke.jar"
-```
-
-**Expected result:**
-
-```text
-The chatbot starts successfully, accepts all three commands, displays
-"packaged task" in the task list, and creates data/tasks.txt beside the JAR.
-```
-
-### Finds matching tasks
-
-**Aim:** Confirm that `find` searches task descriptions without regard to letter case.
+**Aim:** Confirm that `find` searches descriptions case-insensitively.
 
 **Input:**
 
 ```text
 todo read book
+medium
 deadline return book /by 2/12/2019 1800
+low
 find BOOK
 bye
 ```
 
-**Expected output:**
+**Expected output:** Both tasks are listed after `Here are the matching
+plays:`.
 
-```text
-____________________________________________________________
-mm   mm   mmmmmm    mmmmmmm
-##  ##    ##    ##  ##    ##
-##m##     ##    ##  ##    ##
-#####     ##    ##  #######
-##  ##m   ##    ##  ##    ##
-##   ##m  ##mmm##   ##mmmm##
-Hello! I'm Kdb.
-What can I do for you?
-____________________________________________________________
-____________________________________________________________
-Got it. I've added this task:
-  [T][ ] read book
-Now you have 1 tasks in the list.
-____________________________________________________________
-____________________________________________________________
-Got it. I've added this task:
-  [D][ ] return book (by: Dec 02 2019, 6:00 pm)
-Now you have 2 tasks in the list.
-____________________________________________________________
-____________________________________________________________
-Here are the matching tasks in your list:
-1.[T][ ] read book
-2.[D][ ] return book (by: Dec 02 2019, 6:00 pm)
-____________________________________________________________
-____________________________________________________________
-Bye. Hope to see you again soon!
-____________________________________________________________
-```
+## 4. Rejects invalid commands
 
-### Rejects find without a keyword
-
-**Aim:** Confirm that `find` reports an error when no search keyword is provided.
+**Aim:** Confirm that invalid commands do not terminate KDB.
 
 **Input:**
 
 ```text
+unknown command
 find
 bye
 ```
 
-**Expected output:**
+**Expected output:** KDB displays command help, reports the missing keyword,
+and exits normally. In the GUI, errors use the red error style.
 
-```text
-____________________________________________________________
-mm   mm   mmmmmm    mmmmmmm
-##  ##    ##    ##  ##    ##
-##m##     ##    ##  ##    ##
-#####     ##    ##  #######
-##  ##m   ##    ##  ##    ##
-##   ##m  ##mmm##   ##mmmm##
-Hello! I'm Kdb.
-What can I do for you?
-____________________________________________________________
-____________________________________________________________
-Please provide a keyword to find.
-____________________________________________________________
-____________________________________________________________
-Bye. Hope to see you again soon!
-____________________________________________________________
-```
+## 5. Handles invalid task data
+
+**Aim:** Confirm that malformed task-file entries are handled safely.
+
+**Preparation:** Place an invalid status or malformed deadline in a temporary
+task file and start KDB with that file.
+
+**Expected output:** KDB reports the loading problem and starts with an empty
+task list instead of crashing.

@@ -31,8 +31,7 @@ public class MainWindow {
     private void initialize() {
         addMessages(botImage, false, false, true, Ui.welcomeBanner());
         addMessages(botImage, false, false, false, Ui.welcomeMessage());
-        dialogContainer.heightProperty().addListener(
-                (observable, oldHeight, newHeight) -> scrollToBottom());
+        dialogContainer.heightProperty().addListener((observable, oldHeight, newHeight) -> scrollToBottom());
         userInput.requestFocus();
     }
 

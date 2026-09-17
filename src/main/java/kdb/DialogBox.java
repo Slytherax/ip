@@ -32,8 +32,13 @@ public class DialogBox extends HBox {
         text.setMaxWidth(isUser ? 450.0 : Double.MAX_VALUE);
         text.setMinHeight(Region.USE_PREF_SIZE);
         text.setPadding(new Insets(10.0));
-        text.getStyleClass().add(isError ? "error-message" :
-                isUser ? "user-message" : "bot-message");
+        if (isError) {
+            text.getStyleClass().add("error-message");
+        } else if (isUser) {
+            text.getStyleClass().add("user-message");
+        } else {
+            text.getStyleClass().add("bot-message");
+        }
         if (isAsciiArt) {
             text.getStyleClass().add("ascii-message");
         }
@@ -76,11 +81,9 @@ public class DialogBox extends HBox {
         double scale = Math.max(AVATAR_SIZE / image.getWidth(), AVATAR_SIZE / image.getHeight());
         double viewportWidth = AVATAR_SIZE / scale;
         double viewportHeight = AVATAR_SIZE / scale;
-        avatar.setViewport(new Rectangle2D(
-                (image.getWidth() - viewportWidth) / 2,
-                (image.getHeight() - viewportHeight) / 2,
-                viewportWidth,
-                viewportHeight));
+        double viewportX = (image.getWidth() - viewportWidth) / 2;
+        double viewportY = (image.getHeight() - viewportHeight) / 2;
+        avatar.setViewport(new Rectangle2D(viewportX, viewportY, viewportWidth, viewportHeight));
         avatar.setClip(new Circle(AVATAR_SIZE / 2, AVATAR_SIZE / 2, AVATAR_SIZE / 2));
         return avatar;
     }

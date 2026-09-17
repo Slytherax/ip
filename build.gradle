@@ -14,6 +14,19 @@ repositories {
     mavenCentral()
 }
 
+String operatingSystem = System.getProperty('os.name').toLowerCase(Locale.ROOT)
+String architecture = System.getProperty('os.arch').toLowerCase(Locale.ROOT)
+String javaFxPlatform
+
+if (operatingSystem.contains('mac')) {
+    javaFxPlatform = architecture.contains('aarch64') || architecture.contains('arm64')
+            ? 'mac-aarch64' : 'mac'
+} else if (operatingSystem.contains('win')) {
+    javaFxPlatform = 'win'
+} else {
+    javaFxPlatform = 'linux'
+}
+
 dependencies {
     String jUnitVersion = '5.14.4'
 
@@ -22,30 +35,12 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnitVersion}"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.14.4'
 
-    def javafxVersion = '17.0.7'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
     String javaFxVersion = '17.0.7'
 
-    implementation("org.openjfx:javafx-base:${javaFxVersion}:win")
-    implementation("org.openjfx:javafx-base:${javaFxVersion}:mac")
-    implementation("org.openjfx:javafx-base:${javaFxVersion}:linux")
-    implementation("org.openjfx:javafx-controls:${javaFxVersion}:win")
-    implementation("org.openjfx:javafx-controls:${javaFxVersion}:mac")
-    implementation("org.openjfx:javafx-controls:${javaFxVersion}:linux")
-    implementation("org.openjfx:javafx-fxml:${javaFxVersion}:win")
-    implementation("org.openjfx:javafx-fxml:${javaFxVersion}:mac")
-    implementation("org.openjfx:javafx-fxml:${javaFxVersion}:linux")
-    implementation("org.openjfx:javafx-graphics:${javaFxVersion}:win")
-    implementation("org.openjfx:javafx-graphics:${javaFxVersion}:mac")
-    implementation("org.openjfx:javafx-graphics:${javaFxVersion}:linux")
-}
-
-    
+    implementation("org.openjfx:javafx-base:${javaFxVersion}:${javaFxPlatform}")
+    implementation("org.openjfx:javafx-controls:${javaFxVersion}:${javaFxPlatform}")
+    implementation("org.openjfx:javafx-fxml:${javaFxVersion}:${javaFxPlatform}")
+    implementation("org.openjfx:javafx-graphics:${javaFxVersion}:${javaFxPlatform}")
 }
 
 test {

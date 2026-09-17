@@ -8,9 +8,16 @@ simple commands.
 
 ## Getting started
 
-KDB requires JDK 25. Open the project in IntelliJ and run
-`kdb.Launcher`. The graphical interface opens with the KDB welcome message
-and command guide.
+KDB requires JDK 25 and must be started through Gradle. From the project root,
+run:
+
+```bash
+./gradlew run
+```
+
+In IntelliJ, you can also open the Gradle panel and run
+`Tasks > application > run`. Do not compile or run `Launcher.java` directly.
+The graphical interface opens with the KDB welcome message and command guide.
 
 Type a command into the input box and press Enter or click **Send**. You can
 resize the window; the conversation area and input box adjust automatically.
