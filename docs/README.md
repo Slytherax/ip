@@ -25,6 +25,24 @@ resize the window; the conversation area and input box adjust automatically.
 KDB saves tasks in `data/tasks.txt`, so tasks remain available the next time
 the application starts.
 
+## Running the packaged JAR
+
+To create the executable fat JAR, run this command from the project root:
+
+```bash
+./gradlew clean shadowJar
+```
+
+The JAR is created at `build/libs/Kdb.jar`. To smoke-test it, copy `Kdb.jar`
+to an empty folder, open a terminal in that folder, and run:
+
+```bash
+java -jar "Kdb.jar"
+```
+
+The application should start normally and create its `data/tasks.txt` file
+beside the JAR when tasks are saved.
+
 ## Commands
 
 | Command | Purpose | Example |
