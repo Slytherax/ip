@@ -27,6 +27,14 @@ if (operatingSystem.contains('mac')) {
     javaFxPlatform = 'linux'
 }
 
+configurations {
+    javafxCurrentNatives
+    javafxWinNatives
+    javafxLinuxNatives
+    javafxMacNatives
+    javafxMacAarch64Natives
+}
+
 dependencies {
     String jUnitVersion = '5.14.4'
 
@@ -37,11 +45,24 @@ dependencies {
 
     String javaFxVersion = '17.0.7'
 
-    implementation("org.openjfx:javafx-base:${javaFxVersion}:${javaFxPlatform}")
-    implementation("org.openjfx:javafx-controls:${javaFxVersion}:${javaFxPlatform}")
-    implementation("org.openjfx:javafx-fxml:${javaFxVersion}:${javaFxPlatform}")
-    implementation("org.openjfx:javafx-graphics:${javaFxVersion}:${javaFxPlatform}")
+    implementation("org.openjfx:javafx-base:${javaFxVersion}")
+    implementation("org.openjfx:javafx-controls:${javaFxVersion}")
+    implementation("org.openjfx:javafx-fxml:${javaFxVersion}")
+    implementation("org.openjfx:javafx-graphics:${javaFxVersion}")
+
+    javafxCurrentNatives("org.openjfx:javafx-graphics:${javaFxVersion}:${javaFxPlatform}")
+    javafxWinNatives("org.openjfx:javafx-graphics:${javaFxVersion}:win")
+    javafxLinuxNatives("org.openjfx:javafx-graphics:${javaFxVersion}:linux")
+    javafxMacNatives("org.openjfx:javafx-graphics:${javaFxVersion}:mac")
+    javafxMacAarch64Natives("org.openjfx:javafx-graphics:${javaFxVersion}:mac-aarch64")
 }
+
+def nativePlatforms = [
+    win: configurations.javafxWinNatives,
+    linux: configurations.javafxLinuxNatives,
+    mac: configurations.javafxMacNatives,
+    'mac-aarch64': configurations.javafxMacAarch64Natives
+]
 
 test {
     useJUnitPlatform()
@@ -70,10 +91,18 @@ jar {
 
 shadowJar {
     archiveFileName = 'Kdb.jar'
+
+    nativePlatforms.each { platform, configuration ->
+        from(configuration.collect { zipTree(it) }) {
+            include '*.dll', '*.so', '*.dylib'
+            into "kdb/natives/${platform}"
+        }
+    }
 }
 
 run {
     standardInput = System.in
+    classpath += configurations.javafxCurrentNatives
 }
 
 checkstyle {
