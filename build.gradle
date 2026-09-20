@@ -45,10 +45,10 @@ dependencies {
 
     String javaFxVersion = '17.0.7'
 
-    implementation("org.openjfx:javafx-base:${javaFxVersion}")
-    implementation("org.openjfx:javafx-controls:${javaFxVersion}")
-    implementation("org.openjfx:javafx-fxml:${javaFxVersion}")
-    implementation("org.openjfx:javafx-graphics:${javaFxVersion}")
+    implementation("org.openjfx:javafx-base:${javaFxVersion}:${javaFxPlatform}")
+    implementation("org.openjfx:javafx-controls:${javaFxVersion}:${javaFxPlatform}")
+    implementation("org.openjfx:javafx-fxml:${javaFxVersion}:${javaFxPlatform}")
+    implementation("org.openjfx:javafx-graphics:${javaFxVersion}:${javaFxPlatform}")
 
     javafxCurrentNatives("org.openjfx:javafx-graphics:${javaFxVersion}:${javaFxPlatform}")
     javafxWinNatives("org.openjfx:javafx-graphics:${javaFxVersion}:win")
@@ -97,6 +97,33 @@ shadowJar {
             include '*.dll', '*.so', '*.dylib'
             into "kdb/natives/${platform}"
         }
+    }
+
+    doLast {
+        File originalJar = archiveFile.get().asFile
+        File filteredJar = new File(originalJar.parentFile, "${originalJar.name}.tmp")
+        java.util.jar.JarFile input = new java.util.jar.JarFile(originalJar)
+        java.util.jar.JarOutputStream output = new java.util.jar.JarOutputStream(
+                new FileOutputStream(filteredJar))
+
+        try {
+            input.entries().each { entry ->
+                boolean isRootNativeLibrary = !entry.name.contains('/')
+                        && (entry.name.endsWith('.dll')
+                        || entry.name.endsWith('.so')
+                        || entry.name.endsWith('.dylib'))
+                if (!isRootNativeLibrary) {
+                    output.putNextEntry(new java.util.jar.JarEntry(entry.name))
+                    input.getInputStream(entry).transferTo(output)
+                    output.closeEntry()
+                }
+            }
+        } finally {
+            output.close()
+            input.close()
+        }
+
+        filteredJar.renameTo(originalJar)
     }
 }
 
