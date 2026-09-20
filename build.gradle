@@ -66,6 +66,16 @@ def nativePlatforms = [
 
 test {
     useJUnitPlatform()
+    dependsOn shadowJar
+    inputs.file(tasks.shadowJar.archiveFile)
+    doFirst {
+        systemProperty 'kdb.releaseJar', tasks.shadowJar.archiveFile.get().asFile.absolutePath
+    }
+    nativePlatforms.each { platform, configuration ->
+        systemProperty "kdb.graphics.${platform}", configuration.files.find {
+            it.name == "javafx-graphics-17.0.7-${platform}.jar"
+        }.absolutePath
+    }
 
     testLogging {
         events 'passed', 'skipped', 'failed'
@@ -91,8 +101,14 @@ jar {
 
 shadowJar {
     archiveFileName = 'Kdb.jar'
+    // Common JavaFX classes occur in several platform artifacts; retain one copy.
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     nativePlatforms.each { platform, configuration ->
+        // Each graphics artifact also contains platform-specific Java classes and resources.
+        from(configuration.collect { zipTree(it) }) {
+            include 'com/**', 'javafx/**'
+        }
         from(configuration.collect { zipTree(it) }) {
             include '*.dll', '*.so', '*.dylib'
             into "kdb/natives/${platform}"
@@ -114,7 +130,7 @@ shadowJar {
                         || entry.name.endsWith('.dylib'))
                 if (!isRootNativeLibrary) {
                     output.putNextEntry(new java.util.jar.JarEntry(entry.name))
-                    input.getInputStream(entry).transferTo(output)
+                    input.getInputStream(entry).withCloseable { stream -> stream.transferTo(output) }
                     output.closeEntry()
                 }
             }
@@ -123,7 +139,8 @@ shadowJar {
             input.close()
         }
 
-        filteredJar.renameTo(originalJar)
+        java.nio.file.Files.move(filteredJar.toPath(), originalJar.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING)
     }
 }
 
